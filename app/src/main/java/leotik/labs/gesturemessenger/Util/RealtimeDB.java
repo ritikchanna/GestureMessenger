@@ -17,8 +17,9 @@ public class RealtimeDB {
 
     private RealtimeDB() {
         database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
         database.setPersistenceEnabled(true);
+        databaseReference = database.getReference();
+
     }
 
     public static synchronized RealtimeDB getInstance() {
