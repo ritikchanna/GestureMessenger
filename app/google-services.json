@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "109198356718",
+    "firebase_url": "https://gesturemessenger.firebaseio.com",
+    "project_id": "gesturemessenger",
+    "storage_bucket": "gesturemessenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109198356718:android:10868b6726c5bb5f",
+        "android_client_info": {
+          "package_name": "leotik.labs.gesturemessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109198356718-ma4iqvgrmeenbav6bn97n4dqa9pepof8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "leotik.labs.gesturemessenger",
+            "certificate_hash": "0ef48347e8864aee72bb57d2cd43a61a2b03a086"
+          }
+        },
+        {
+          "client_id": "109198356718-3n04bcl5q0n1hdhv9ijgrc41mqi87vts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA23t2TBoAIhM__1gPvWfnCn5NhxUqjndI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109198356718-3n04bcl5q0n1hdhv9ijgrc41mqi87vts.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

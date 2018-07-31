@@ -1,24 +1,22 @@
-package leotik.labs.gesturemessenger;
+package leotik.labs.gesturemessenger.Views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.List;
+
+import leotik.labs.gesturemessenger.Pixel;
 
 /**
  * Created by superuser on 4/6/18.
  */
 
-public class CanvasView extends View implements Runnable {
+public class GestureOverlayView extends View implements Runnable {
     private int mWidth;
     private int mHeight;
     private List<Pixel> pixelList;
@@ -27,12 +25,12 @@ public class CanvasView extends View implements Runnable {
     private long delay;
     private Thread animator = null;
 
-    public CanvasView(Context context, List<Pixel> pixels) {
+    public GestureOverlayView(Context context, List<Pixel> pixels) {
         super(context);
         pixelList = pixels;
     }
 
-    public CanvasView(Context context, AttributeSet attribs, List<Pixel> pixels) {
+    public GestureOverlayView(Context context, AttributeSet attribs, List<Pixel> pixels) {
         super(context, attribs);
         pixelList = pixels;
     }
@@ -48,22 +46,20 @@ public class CanvasView extends View implements Runnable {
         canvas.drawLine(0, 0, mWidth, mHeight, paint);
         canvas.drawLine(mWidth, 0, 0, mHeight, paint);
         paint.setColor(Color.parseColor("#d3d3d3"));
-        canvas.drawLine(0,0,mWidth,0,paint);
+        canvas.drawLine(0, 0, mWidth, 0, paint);
         //TODO skip some pixels to improve performance
         //TODO use bitmap to avoid redraw everytime ?
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.MITER);
         paint.setStrokeWidth(4f);
-        for(int i=0;pixelCounter>i;i++){
-            pixel=pixelList.get(i);
+        for (int i = 0; pixelCounter > i; i++) {
+            pixel = pixelList.get(i);
             paint.setColor(pixel.getColor());
-            canvas.drawPoint(pixel.getX(),pixel.getY(),paint);
+            canvas.drawPoint(pixel.getX(), pixel.getY(), paint);
             paint.setColor(Color.parseColor("#ffffff"));
-            canvas.drawLine(0,0,(mWidth/pixelList.size())*pixelCounter,0,paint);
+            canvas.drawLine(0, 0, (mWidth / pixelList.size()) * pixelCounter, 0, paint);
 
         }
-
-
 
 
     }
@@ -78,10 +74,10 @@ public class CanvasView extends View implements Runnable {
 
     @Override
     public void run() {
-        Log.d("Ritik","Delay "+delay);
-        while (pixelCounter<pixelList.size()) {
+        Log.d("Ritik", "Delay " + delay);
+        while (pixelCounter < pixelList.size()) {
 
-            Log.d("Ritik","Looping "+pixelCounter);
+            Log.d("Ritik", "Looping " + pixelCounter);
 
 
             // Move planet by dTheta and compute new X and Y
@@ -101,6 +97,7 @@ public class CanvasView extends View implements Runnable {
             }
         }
     }
+
     // Method to start animation loop
     public void startIt(long delay) {
         this.delay = delay;
@@ -120,7 +117,6 @@ public class CanvasView extends View implements Runnable {
 //            startIt(delay);
 //        }
 //    }
-
 
 
 }

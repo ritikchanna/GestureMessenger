@@ -4,26 +4,22 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
-import leotik.labs.gesturemessenger.CanvasView;
 import leotik.labs.gesturemessenger.Pixel;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Views.GestureOverlayView;
 
 public class OverlayService extends Service {
     private WindowManager mWindowManager;
-    private CanvasView mChatHeadView;
+    private GestureOverlayView mChatHeadView;
     private ImageButton btnClose;
 
 
@@ -45,7 +41,7 @@ public class OverlayService extends Service {
         pixelList=new ArrayList<Pixel>();
         for(int i=0;i<1000;i++)
         pixelList.add(new Pixel(50,i, Color.RED,4));
-        mChatHeadView = new CanvasView(getApplicationContext(),pixelList);
+        mChatHeadView = new GestureOverlayView(getApplicationContext(), pixelList);
 
 
         //Add the view to the window.
