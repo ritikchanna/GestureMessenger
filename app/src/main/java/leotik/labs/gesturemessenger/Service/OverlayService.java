@@ -44,7 +44,7 @@ public class OverlayService extends Service {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 //WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT);
         final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,

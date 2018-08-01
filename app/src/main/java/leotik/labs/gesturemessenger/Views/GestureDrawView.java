@@ -137,6 +137,7 @@ public class GestureDrawView extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                gesture = gesture + "u";
                 touch_up();
                 invalidate();
                 break;
