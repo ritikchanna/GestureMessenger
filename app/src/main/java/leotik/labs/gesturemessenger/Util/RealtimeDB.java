@@ -13,6 +13,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import leotik.labs.gesturemessenger.Service.OverlayService;
 
@@ -21,10 +26,17 @@ public class RealtimeDB {
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private Context context;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseFirestoreSettings firebaseFirestoreSettings;
 
     private RealtimeDB(Context context) {
         database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestoreSettings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        firebaseFirestore.setFirestoreSettings(firebaseFirestoreSettings);
         databaseReference = database.getReference();
         this.context = context;
 
@@ -36,6 +48,30 @@ public class RealtimeDB {
             mrealtimeDB = new RealtimeDB(context);
         }
         return mrealtimeDB;
+    }
+
+    public void initUser(@Nullable String FirstName, @Nullable String SecondName, String Email, @Nullable String Phoneno, @Nullable String token) {
+        //todo return if succesful by adding listners
+        Map<String, String> user = new HashMap<>();
+        user.put("f", FirstName);
+        user.put("s", SecondName);
+        user.put("p", Phoneno);
+        user.put("t", token);
+        Boolean success;
+// Add a new document with a generated ID
+        firebaseFirestore.collection("u").document(Email)
+                .set(user);
+    }
+
+    public void addFriend() {
+        //todo maintain list of friends for each user on a separate node
+
+    }
+
+    public void updatetokenonServer(String token, String Email) {
+        //todo return if succesful by adding listners
+        firebaseFirestore.collection("u").document(Email)
+                .update("t", token);
     }
 
 

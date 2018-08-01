@@ -10,6 +10,7 @@ public class firebasemessagingservice extends FirebaseMessagingService {
         super();
     }
 
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // ...
@@ -24,10 +25,10 @@ public class firebasemessagingservice extends FirebaseMessagingService {
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-                scheduleJob();
+                //scheduleJob();
             } else {
                 // Handle message within 10 seconds
-                handleNow();
+                //handleNow();
             }
 
         }

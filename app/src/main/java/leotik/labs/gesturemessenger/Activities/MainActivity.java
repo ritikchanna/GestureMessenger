@@ -10,8 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Service.OverlayService;
+import leotik.labs.gesturemessenger.Util.RealtimeDB;
 
 public class MainActivity extends Activity {
 Button btn_draw,btn_view;
@@ -19,6 +24,22 @@ Button btn_draw,btn_view;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //todo remove this code after auth
+        RealtimeDB.getInstance(MainActivity.this).initUser("Ritik", "Channa", "chnritik@gmail.com", "9013660088", null);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                RealtimeDB.getInstance(MainActivity.this).updatetokenonServer(newToken, "chnritik@gmail.com");
+
+            }
+        });
+
+
+
+
         btn_draw = (Button) findViewById(R.id.btn_draw);
         btn_draw.setOnClickListener(new View.OnClickListener() {
             @Override
