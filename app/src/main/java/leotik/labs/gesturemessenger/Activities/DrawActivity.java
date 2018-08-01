@@ -32,12 +32,12 @@ public class DrawActivity extends AppCompatActivity {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
         dv.setPaint(mPaint);
-        RealtimeDB.getInstance().setValueEventListner("chnritik@gmail*com");
+        RealtimeDB.getInstance(DrawActivity.this).setValueEventListner("chnritik@gmail.com");
         send_fab = findViewById(R.id.send_fab);
         send_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RealtimeDB.getInstance().sendMessage("android studio", "chnritik@gmail.com", dv.gesture);
+                RealtimeDB.getInstance(DrawActivity.this).sendMessage("android studio", "chnritik@gmail.com", dv.gesture + "s" + dv.size);
             }
         });
     }

@@ -16,7 +16,7 @@ public class GestureDrawView extends View {
     private static final float TOUCH_TOLERANCE = 4;
     public int width;
     public int height;
-    public String gesture = "";
+    public String gesture = " ";
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
@@ -27,6 +27,7 @@ public class GestureDrawView extends View {
     private float mX, mY;
     private float prevx;
     private float prevy;
+    public long size = 0;
 
     public GestureDrawView(Context c) {
         super(c);
@@ -129,9 +130,10 @@ public class GestureDrawView extends View {
                 touch_move(x, y);
                 invalidate();
                 if (distance(x, y, prevx, prevy) > mPaint.getStrokeWidth()) {
-                    gesture = gesture + "x" + (int) x + "y" + (int) y;
+                    gesture = gesture + "x" + (int) x + "y" + (int) y + ";";
                     prevx = x;
                     prevy = y;
+                    size++;
                 }
                 break;
             case MotionEvent.ACTION_UP:

@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import leotik.labs.gesturemessenger.Service.OverlayService;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Service.OverlayService;
 
 public class MainActivity extends Activity {
 Button btn_draw,btn_view;
@@ -24,6 +24,7 @@ Button btn_draw,btn_view;
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,DrawActivity.class));
+                finish();
             }
         });
         btn_view = (Button) findViewById(R.id.btn_view);
