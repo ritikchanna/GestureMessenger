@@ -6,19 +6,23 @@ admin.initializeApp();
 admin.firestore().settings({
     timestampsInSnapshots: true
 });
-
-
+var token = 'token_value';
+var sender = 'sender_value';
+var reciever = 'reciever_value';
+var message = 'message_value';
+var payload ='payload_value';
+ 
 
 
 exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
     .onCreate((snapshot, context) => {
-        console.log('v12');
-        const message = context.params.messageid;
+        console.log('v16');
+         message = context.params.messageid;
         console.log('Message Id:', message);
 
-        const reciever = snapshot.val().r;
+         reciever = snapshot.val().r;
         console.log('Message reciever: ', reciever);
-        const sender = snapshot.val().s;
+         sender = snapshot.val().s;
         console.log('Message sender: ', sender);
 
 
@@ -29,14 +33,14 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
                 if (!doc.exists) {
                     console.log('Token doesnt exist ');
                 } else {
-                    const token = doc.data().v;
+                    token = doc.data().v;
                     console.log('Token data:', token);
-                    var message = {
+                    payload = {
                         data: {
-                            id: message,
-                            sender: sender
-                        },
-                        token: token
+                            id: `${message}`,
+                            sender: `${sender}`
+                        }
+               
                     };
 
 
@@ -44,7 +48,7 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
 
                 }
                 console.log('End Then');
-                return admin.messaging().send(message);
+                return admin.messaging().sendToDevice(token,payload);
 
             })
             .catch(err => {
