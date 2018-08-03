@@ -32,7 +32,7 @@ public class DrawActivity extends AppCompatActivity {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
         dv.setPaint(mPaint);
-        RealtimeDB.getInstance(DrawActivity.this).setValueEventListner("chnritik@gmail.com");
+        // RealtimeDB.getInstance(DrawActivity.this).setValueEventListner("chnritik@gmail.com");
         send_fab = findViewById(R.id.send_fab);
         send_fab.setOnClickListener(new View.OnClickListener() {
             @Override

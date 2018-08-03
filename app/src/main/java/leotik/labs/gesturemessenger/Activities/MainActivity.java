@@ -27,7 +27,7 @@ Button btn_draw,btn_view;
 
 
         //todo remove this code after auth
-        RealtimeDB.getInstance(MainActivity.this).initUser("Ritik", "Channa", "chnritik@gmail.com", "9013660088", null);
+        RealtimeDB.getInstance(MainActivity.this).initUser("Ritik", "Channa", "chnritik@gmail.com", "9013660088");
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -38,9 +38,7 @@ Button btn_draw,btn_view;
         });
 
 
-
-
-        btn_draw = (Button) findViewById(R.id.btn_draw);
+        btn_draw = findViewById(R.id.btn_draw);
         btn_draw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,7 +46,7 @@ Button btn_draw,btn_view;
                 finish();
             }
         });
-        btn_view = (Button) findViewById(R.id.btn_view);
+        btn_view = findViewById(R.id.btn_view);
         btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
