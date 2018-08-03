@@ -1,10 +1,14 @@
 package leotik.labs.gesturemessenger.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -28,6 +32,15 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(SplashScreen.this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 1024);
+        } else
+            login();
+    }
+
+    public void login() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in
@@ -37,6 +50,8 @@ public class SplashScreen extends AppCompatActivity {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setTheme(R.style.AppTheme)
+                            .setLogo(R.drawable.ic_launcher_foreground)
                             .setAvailableProviders(Arrays.asList(
                                     new AuthUI.IdpConfig.GoogleBuilder().build(),
 //                                    new AuthUI.IdpConfig.FacebookBuilder().build(),
@@ -48,13 +63,28 @@ public class SplashScreen extends AppCompatActivity {
                             .build(),
                     RC_SIGN_IN);
         }
+
     }
 
-
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1024) {
+
+            //Check if the permission is granted or not.
+            if (resultCode == RESULT_OK) {
+                login();
+            } else {
+                //todo show a dialog, try again or maybe switch to legacy mode (Without Overlay)
+                Toast.makeText(this,
+                        "Draw over other app permission not available. Closing the application",
+                        Toast.LENGTH_SHORT).show();
+
+                finish();
+            }
+        }
         // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
-        if (requestCode == RC_SIGN_IN) {
+        else if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             // Successfully signed in

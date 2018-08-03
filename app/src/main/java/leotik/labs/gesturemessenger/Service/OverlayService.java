@@ -74,7 +74,7 @@ public class OverlayService extends Service {
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mChatHeadView, params);
 
-
+        params1.gravity = Gravity.TOP | Gravity.RIGHT;
         btnClose = new ImageButton(this);
         btnClose.setBackground(getDrawable(R.drawable.cancel));
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -125,11 +125,11 @@ public class OverlayService extends Service {
     @TargetApi(26)
     private synchronized String createChannel() {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        String name = "snap map fake location ";
+        //todo change these string
+        String name = "Notification Body";
         int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel mChannel = new NotificationChannel("snap map channel", name, importance);
+        NotificationChannel mChannel = new NotificationChannel("Channel name", name, importance);
 
         mChannel.enableLights(true);
         mChannel.setLightColor(Color.BLUE);
@@ -138,6 +138,6 @@ public class OverlayService extends Service {
         } else {
             stopSelf();
         }
-        return "snap map channel";
+        return "Channel Name";
     }
 }
