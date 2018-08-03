@@ -18,6 +18,7 @@ public class DrawActivity extends AppCompatActivity {
     private Paint mPaint;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +38,7 @@ public class DrawActivity extends AppCompatActivity {
         send_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RealtimeDB.getInstance(DrawActivity.this).sendMessage("android studio", "chnritik@gmail.com", dv.gesture + "s" + dv.size);
+                RealtimeDB.getInstance(DrawActivity.this).sendMessage("chnritik@gmail.com", dv.gesture + "s" + dv.size);
             }
         });
     }

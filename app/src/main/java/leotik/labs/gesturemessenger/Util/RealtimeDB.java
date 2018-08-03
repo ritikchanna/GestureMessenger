@@ -2,6 +2,7 @@ package leotik.labs.gesturemessenger.Util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class RealtimeDB {
     private Context context;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseFirestoreSettings firebaseFirestoreSettings;
+    private User user;
 
     private RealtimeDB(Context context) {
         database = FirebaseDatabase.getInstance();
@@ -37,6 +39,7 @@ public class RealtimeDB {
         firebaseFirestore.setFirestoreSettings(firebaseFirestoreSettings);
         databaseReference = database.getReference();
         this.context = context;
+        user = User.getInstance();
 
     }
 
@@ -65,17 +68,17 @@ public class RealtimeDB {
 
     }
 
-    public void updatetokenonServer(String token, String Email) {
+    public void updatetokenonServer(String token) {
         //todo return if succesful by adding listners
         //databaseReference.child("t").child(Email.replace('.','*')).setValue(token);
-        firebaseFirestore.collection("t").document(Email.replace('.', '*')).update("v", token);
+        firebaseFirestore.collection("t").document(user.getEmail().replace('.', '*')).update("v", token);
     }
 
 
-    public void sendMessage(String Sender, String Receiver, String Gesture) {
+    public void sendMessage(String Receiver, String Gesture) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
-        Sender = Sender.replace('.', '*');
+        String Sender = user.getEmail().replace('.', '*');
         Receiver = Receiver.replace('.', '*');
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
@@ -103,7 +106,11 @@ public class RealtimeDB {
                 Log.e("Ritik", "onDataChange: " + gesture);
                 Intent intent = new Intent(context, OverlayService.class);
                 intent.putExtra("gesture", gesture);
-                context.startService(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent);
+                } else {
+                    context.startService(intent);
+                }
 
 
                 //((AppCompatActivity) context).finish();

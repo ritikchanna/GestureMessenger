@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //Only load English for Firebase-auth-ui
+        resConfigs "en"
     }
     buildTypes {
         release {
@@ -26,6 +28,7 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.google.firebase:firebase-messaging:17.1.0'
     implementation 'com.google.firebase:firebase-firestore:17.0.4'
+    implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

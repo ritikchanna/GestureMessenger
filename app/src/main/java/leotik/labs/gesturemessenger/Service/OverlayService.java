@@ -1,10 +1,19 @@
 package leotik.labs.gesturemessenger.Service;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +23,8 @@ import android.widget.ImageButton;
 
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Views.GestureOverlayView;
+
+import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public class OverlayService extends Service {
     private WindowManager mWindowManager;
@@ -87,8 +98,46 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        //todo service closes on ram clear, showing notification can be possible fix, doesnt work on oreo
+        startForeground(36, getNotification());
         mChatHeadView.startIt(100, intent.getStringExtra("gesture"));
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    public Notification getNotification() {
+        String channel;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            channel = createChannel();
+        else {
+            channel = "";
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel).setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("snap map fake location");
+        Notification notification = mBuilder
+                .setPriority(PRIORITY_LOW)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+
+
+        return notification;
+    }
+
+    @NonNull
+    @TargetApi(26)
+    private synchronized String createChannel() {
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String name = "snap map fake location ";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+
+        NotificationChannel mChannel = new NotificationChannel("snap map channel", name, importance);
+
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.BLUE);
+        if (mNotificationManager != null) {
+            mNotificationManager.createNotificationChannel(mChannel);
+        } else {
+            stopSelf();
+        }
+        return "snap map channel";
     }
 }

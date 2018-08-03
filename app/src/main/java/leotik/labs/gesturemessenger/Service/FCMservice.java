@@ -13,7 +13,7 @@ public class FCMservice extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        RealtimeDB.getInstance(getApplicationContext()).updatetokenonServer(s, "chnritik@gmail.com");
+        RealtimeDB.getInstance(getApplicationContext()).updatetokenonServer(s);
 
     }
 
