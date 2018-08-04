@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 import android.view.View;
+
 /**
  * Created by superuser on 4/6/18.
  */
@@ -85,8 +86,6 @@ public class GestureOverlayView extends View implements Runnable {
 //        }
 //
 //        canvas.drawPath(mPath, paint);
-
-
 
 
     }

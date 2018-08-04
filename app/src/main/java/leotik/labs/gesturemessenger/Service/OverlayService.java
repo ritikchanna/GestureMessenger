@@ -83,7 +83,7 @@ public class OverlayService extends Service {
                 stopSelf();
             }
         });
-        mWindowManager.addView(btnClose,params1);
+        mWindowManager.addView(btnClose, params1);
 
     }
 
@@ -91,7 +91,8 @@ public class OverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mChatHeadView != null) { mWindowManager.removeView(mChatHeadView);
+        if (mChatHeadView != null) {
+            mWindowManager.removeView(mChatHeadView);
             mWindowManager.removeView(btnClose);
         }
     }

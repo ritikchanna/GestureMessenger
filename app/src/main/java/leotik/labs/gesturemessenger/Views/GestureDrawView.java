@@ -17,6 +17,7 @@ public class GestureDrawView extends View {
     public int width;
     public int height;
     public String gesture = " ";
+    public long size = 0;
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
@@ -27,7 +28,6 @@ public class GestureDrawView extends View {
     private float mX, mY;
     private float prevx;
     private float prevy;
-    public long size = 0;
 
     public GestureDrawView(Context c) {
         super(c);

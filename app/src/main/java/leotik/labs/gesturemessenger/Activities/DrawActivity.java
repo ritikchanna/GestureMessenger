@@ -18,7 +18,6 @@ public class DrawActivity extends AppCompatActivity {
     private Paint mPaint;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
