@@ -11,12 +11,13 @@ var sender = 'sender_value';
 var reciever = 'reciever_value';
 var message = 'message_value';
 var payload ='payload_value';
+var db = admin.firestore();
  
 
 
 exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
     .onCreate((snapshot, context) => {
-        console.log('v16');
+        console.log('v19');
          message = context.params.messageid;
         console.log('Message Id:', message);
 
@@ -24,17 +25,6 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
         console.log('Message reciever: ', reciever);
          sender = snapshot.val().s;
         console.log('Message sender: ', sender);
-
-
-        var db = admin.firestore();
-        var tokenRef = db.collection('t').doc(reciever);
-        var getDoc = tokenRef.get()
-            .then(doc => {
-                if (!doc.exists) {
-                    console.log('Token doesnt exist ');
-                } else {
-                    token = doc.data().v;
-                    console.log('Token data:', token);
                     payload = {
                         data: {
                             id: `${message}`,
@@ -42,20 +32,32 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
                         }
                
                     };
+        console.log('Payload Created');
 
 
-
+        
+        var tokenRef = db.collection('t').doc(reciever);
+        console.log('Fetching Token');
+        tokenRef.get()
+            .then(doc => {
+                console.log('Fetching Token started'); 
+                if (!doc.exists) {
+                    console.log('Token doesnt exist ');
+                } else {
+                    token = doc.data().v;
+                    console.log('Token data:', token);
 
                 }
                 console.log('End Then');
-                return admin.messaging().sendToDevice(token,payload);
+                return token;
 
             })
             .catch(err => {
                 console.log('Error getting token', err);
-            }).then((response) => {
-                // Response is a message ID string.
-                return console.log('Successfully sent message:', response);
+            }).then((token) => {
+                console.log('Sending FCM now');
+                admin.messaging().sendToDevice(token,payload);
+                return console.log('Successfully sent message:');
             })
             .catch((error) => {
                 console.log('Error sending message:', error);
