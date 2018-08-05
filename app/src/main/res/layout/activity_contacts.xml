@@ -32,5 +32,5 @@
         android:layout_alignParentRight="true"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:src="@android:drawable/btn_plus" />
+        android:src="@drawable/ic_add" />
 </RelativeLayout>
