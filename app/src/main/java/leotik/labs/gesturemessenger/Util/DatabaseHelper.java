@@ -6,10 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
 
@@ -82,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public UserPOJO getUser(String email) {
+        Log.d("Ritik", "getUser: " + email);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_INFO_TABLE,
                 new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_TIMESTAMP},
@@ -90,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null)
             cursor.moveToFirst();
-
+        Log.d("Ritik", "getUser: " + cursor.getColumnCount());
         return new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
@@ -164,9 +165,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public void addUsers(Map<String, String> allUsers) {
-
-    }
 
 
 }

@@ -6,8 +6,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/contact_photo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentStart="true"
         fresco:placeholderImage="@drawable/googleg_standard_color_18"
         fresco:roundAsCircle="true" />
@@ -16,6 +16,9 @@
         android:id="@+id/contact_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:textSize="20sp"
         android:layout_toEndOf="@id/contact_photo" />
 
 </RelativeLayout>

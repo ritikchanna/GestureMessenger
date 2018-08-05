@@ -1,7 +1,6 @@
 package leotik.labs.gesturemessenger.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,21 +11,23 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
-import java.util.Random;
 
-import leotik.labs.gesturemessenger.Activities.DrawActivity;
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Util.ChatsDatabaseHelper;
+import leotik.labs.gesturemessenger.Util.DatabaseHelper;
 
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> {
-    private static List<UserPOJO> mUsers;
+    private static List<String> mUsers;
     private static Context mcontext;
-    private static Intent launchDrawActivity;
+    private static ChatsDatabaseHelper chatsDatabaseHelper;
+    private static DatabaseHelper databaseHelper;
 
 
-    public ChatsAdapter(Context context, List<UserPOJO> users) {
-        mUsers = users;
-        launchDrawActivity = new Intent(context, DrawActivity.class);
+    public ChatsAdapter(Context context) {
+        chatsDatabaseHelper = new ChatsDatabaseHelper(context);
+        databaseHelper = new DatabaseHelper(context);
+        mUsers = chatsDatabaseHelper.getChatUsers();
         mcontext = context;
     }
 
@@ -42,13 +43,18 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.profileName.setText(mUsers.get(position).getN());
-        if (mUsers.get(position).getU() != null || mUsers.get(position).getU().equals(""))
-            holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + String.valueOf(new Random().nextInt(1000)) + ".png"));
+        UserPOJO user = databaseHelper.getUser(mUsers.get(position));
+        holder.profileName.setText(user.getN());
+        if (user.getU() != null || user.getU().equals(""))
+            holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + mUsers.get(position) + ".png"));
         else
-            holder.profilePhoto.setImageURI(Uri.parse(mUsers.get(position).getU()));
+            holder.profilePhoto.setImageURI(Uri.parse(user.getU()));
     }
 
+    public void updateChats() {
+        mUsers = chatsDatabaseHelper.getChatUsers();
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return mUsers.size();
@@ -64,15 +70,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
             super(v);
             profilePhoto = v.findViewById(R.id.contact_photo);
             profileName = v.findViewById(R.id.contact_name);
+            v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            launchDrawActivity.putExtra("email", mUsers.get(getAdapterPosition()).getE());
-            mcontext.startActivity(launchDrawActivity);
-
 
         }
-
     }
 }

@@ -13,6 +13,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Fresco.initialize(this);
         RealtimeDB.getInstance(this);
+//        RealtimeDB.getInstance(this).attachMessageListner();
     }
 
     @Override

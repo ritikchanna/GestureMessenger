@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +40,7 @@ public class RealtimeDB {
     private FirebaseFirestoreSettings firebaseFirestoreSettings;
     private User mUser;
     private DatabaseHelper databaseHelper;
+    private ChatsDatabaseHelper chatsDatabaseHelper;
 
     private RealtimeDB(Context context) {
         database = FirebaseDatabase.getInstance();
@@ -52,8 +54,7 @@ public class RealtimeDB {
         this.context = context;
         mUser = User.getInstance();
         databaseHelper = new DatabaseHelper(context);
-
-
+        chatsDatabaseHelper = new ChatsDatabaseHelper(context);
     }
 
     public static synchronized RealtimeDB getInstance(Context context) {
@@ -153,8 +154,10 @@ public class RealtimeDB {
             Log.e("Ritik", "updatetokenonServer: firebaseuser still null");
             return;
         }
+        HashMap<String, Object> tokenvalue = new HashMap<>();
+        tokenvalue.put("v", token);
 
-        firebaseFirestore.collection("t").document(sanitizeEmail(mUser.getEmail())).update("v", token);
+        firebaseFirestore.collection("t").document(sanitizeEmail(mUser.getEmail())).set(tokenvalue);
     }
 
 
@@ -166,7 +169,6 @@ public class RealtimeDB {
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
         msg.put("r", Receiver);
-        msg.put("t", System.currentTimeMillis() + "");
         msg.put("m", Gesture);
         databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -174,13 +176,13 @@ public class RealtimeDB {
                 downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
 
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
                     }
                 });
+        databaseReference.child("a").child(Receiver).child(System.currentTimeMillis() + Sender).setValue("u");
     }
 
     public void displayGesture(String MessageID) {
@@ -192,20 +194,31 @@ public class RealtimeDB {
 
 
                 String gesture = "gesture_value";
+                String sender = "sender value";
+                String time = "time_value";
+
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     if (userSnapshot.getKey().equals("m"))
                         gesture = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("s"))
+                        sender = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("t"))
+                        time = userSnapshot.getValue().toString();
+
 
                 }
 
                 Log.e("Ritik", "onDataChange: " + gesture);
                 Intent intent = new Intent(context, OverlayService.class);
                 intent.putExtra("gesture", gesture);
+                //todo check if should be drawn otherwise drop notification
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(intent);
                 } else {
                     context.startService(intent);
                 }
+                chatsDatabaseHelper.insertChat(sender, gesture, time, "s");
+                //todo update seen on server and database
 
 
                 //((AppCompatActivity) context).finish();
@@ -219,6 +232,35 @@ public class RealtimeDB {
 
     }
 
+    public void attachMessageListner() {
+        //todo this can help with delay, but has to keep running use service for it....
+        databaseReference.child("a").child(sanitizeEmail(mUser.getEmail())).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d("Ritik", "onChildAdded: " + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public String sanitizeEmail(String Email) {
         return Email.replace('.', '_');

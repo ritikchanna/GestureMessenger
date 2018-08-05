@@ -18,20 +18,15 @@ import android.view.View;
 
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import leotik.labs.gesturemessenger.Adapters.ChatsAdapter;
-import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.R;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mdrawer;
     private NavigationView mNavigationView;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ChatsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<UserPOJO> mCurrentUsers;
     private FloatingActionButton fab_send_new;
 
     @Override
@@ -82,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-
-        mCurrentUsers = new ArrayList<>();
-        mAdapter = new ChatsAdapter(MainActivity.this, mCurrentUsers);
+        mAdapter = new ChatsAdapter(MainActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
         fab_send_new = findViewById(R.id.fab_new_chat);
@@ -95,7 +88,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //todo find someplace else for this
+//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( this,  new OnSuccessListener<InstanceIdResult>() {
+//            @Override
+//            public void onSuccess(InstanceIdResult instanceIdResult) {
+//                String newToken = instanceIdResult.getToken();
+//                RealtimeDB.getInstance(MainActivity.this).updatetokenonServer(newToken);
+//
+//            }
+//        });
+//
+    }
 
+    @Override
+    protected void onResume() {
+        mAdapter.updateChats();
+        super.onResume();
     }
 
     @Override
