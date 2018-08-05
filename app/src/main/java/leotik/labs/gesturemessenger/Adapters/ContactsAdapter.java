@@ -3,6 +3,7 @@ package leotik.labs.gesturemessenger.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         public void onClick(View view) {
             launchDrawActivity.putExtra("email", mUsers.get(getAdapterPosition()).getE());
             mcontext.startActivity(launchDrawActivity);
+            ((AppCompatActivity) mcontext).finish();
 
 
         }

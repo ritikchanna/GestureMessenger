@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -156,7 +158,7 @@ public class RealtimeDB {
     }
 
 
-    public void sendMessage(String Receiver, String Gesture) {
+    public void sendMessage(String Receiver, String Gesture, final DownloadListner downloadListner) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
         String Sender = sanitizeEmail(mUser.getEmail());
@@ -166,7 +168,19 @@ public class RealtimeDB {
         msg.put("r", Receiver);
         msg.put("t", System.currentTimeMillis() + "");
         msg.put("m", Gesture);
-        databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg);
+        databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
+
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
+                    }
+                });
     }
 
     public void displayGesture(String MessageID) {
