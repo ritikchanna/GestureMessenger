@@ -7,17 +7,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import leotik.labs.gesturemessenger.Interface.DownloadListner;
+import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.Service.OverlayService;
 
 public class RealtimeDB {
@@ -27,7 +35,8 @@ public class RealtimeDB {
     private Context context;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseFirestoreSettings firebaseFirestoreSettings;
-    private User user;
+    private User mUser;
+    private DatabaseHelper databaseHelper;
 
     private RealtimeDB(Context context) {
         database = FirebaseDatabase.getInstance();
@@ -39,7 +48,9 @@ public class RealtimeDB {
         firebaseFirestore.setFirestoreSettings(firebaseFirestoreSettings);
         databaseReference = database.getReference();
         this.context = context;
-        user = User.getInstance();
+        mUser = User.getInstance();
+        databaseHelper = new DatabaseHelper(context);
+
 
     }
 
@@ -51,35 +62,105 @@ public class RealtimeDB {
         return mrealtimeDB;
     }
 
-    public void initUser(@Nullable String FirstName, @Nullable String SecondName, String Email, @Nullable String Phoneno) {
+    public void initUser(@Nullable String Name, String Email, @Nullable String photoUrl, @Nullable String Phoneno) {
         //todo return if succesful by adding listners
         Map<String, String> user = new HashMap<>();
-        user.put("f", FirstName);
-        user.put("s", SecondName);
+        user.put("n", Name);
+        user.put("u", photoUrl);
         user.put("p", Phoneno);
         Boolean success;
 // Add a new document with a generated ID
-        firebaseFirestore.collection("u").document(Email.replace('.', '*'))
+        firebaseFirestore.collection("u").document(sanitizeEmail(Email))
                 .set(user);
     }
 
-    public void addFriend() {
-        //todo maintain list of friends for each user on a separate node
+    public void addFriend(String EmailofFriend, DownloadListner downloadListner) {
+        Map<String, Object> newFriend = new HashMap<>();
+        newFriend.put(sanitizeEmail(EmailofFriend), "s");
+        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).set(newFriend, SetOptions.merge());
+        downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, "");
+    }
+
+    public void attachFriendListListner(final DownloadListner downloadListner) {
+        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Ritik", "Listen failed.", e);
+                    return;
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    Log.d("Ritik", "Current data: " + documentSnapshot.getData());
+
+                    Map<String, Object> newUsers = documentSnapshot.getData();
+                    newUsers.keySet().removeAll(databaseHelper.getallEmails());
+                    updateFriendList(newUsers, downloadListner);
+                    Log.d("Ritik", "Added Friends: " + newUsers);
+                } else {
+                    Log.d("Ritik", "Current data: null");
+                }
+            }
+        });
+    }
+
+    public void updateFriendList(Map<String, Object> userstoadd, final DownloadListner downloadListner) {
+
+
+        for (final Map.Entry<String, Object> entry : userstoadd.entrySet()) {
+            firebaseFirestore.collection("u").document(entry.getKey().toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().getData() != null) {
+                            Log.e("Ritik", "onComplete: " + task.getResult().getData());
+                            Map<String, Object> user = task.getResult().getData();
+                            UserPOJO userPOJO = new UserPOJO(entry.getKey(), user.get("n") + "", user.get("u") + "", user.get("p") + "");
+                            databaseHelper.insertUser(userPOJO);
+                        }
+
+
+                    } else Log.e("Ritik", "onComplete: task failed " + task.getException());
+                }
+            });
+            // user.put("s",entry.getValue());
+
+
+        }
+        if (downloadListner != null) {
+            downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, "");
+        }
+
+    }
+
+    public void updateUser(String Email) {
+        Map<String, Object> user = firebaseFirestore.collection("u").document(sanitizeEmail(Email)).get().getResult().getData();
+        databaseHelper.insertUser(Email, user.get("n").toString(), user.get("u").toString(), user.get("p").toString());
 
     }
 
     public void updatetokenonServer(String token) {
         //todo return if succesful by adding listners
         //databaseReference.child("t").child(Email.replace('.','*')).setValue(token);
-        firebaseFirestore.collection("t").document(user.getEmail().replace('.', '*')).update("v", token);
+        if (mUser.getFirebaseUser() == null) {
+            Log.d("Ritik", "updatetokenonServer: FIrebaseuser null");
+            User.getInstance().destroy();
+            mUser = User.getInstance();
+        }
+        if (mUser == null) {
+            Log.e("Ritik", "updatetokenonServer: firebaseuser still null");
+            return;
+        }
+
+        firebaseFirestore.collection("t").document(sanitizeEmail(mUser.getEmail())).update("v", token);
     }
 
 
     public void sendMessage(String Receiver, String Gesture) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
-        String Sender = user.getEmail().replace('.', '*');
-        Receiver = Receiver.replace('.', '*');
+        String Sender = sanitizeEmail(mUser.getEmail());
+        Receiver = sanitizeEmail(Receiver);
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
         msg.put("r", Receiver);
@@ -122,6 +203,11 @@ public class RealtimeDB {
             }
         });
 
+    }
+
+
+    public String sanitizeEmail(String Email) {
+        return Email.replace('.', '_');
     }
 
 

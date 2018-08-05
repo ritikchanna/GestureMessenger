@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Gesture Messenger</string>
+    <string name="unknown_error">Something went wrong in deep space !!</string>
+    <string name="no_internet">Make sure you are connected to Internet</string>
+    <string name="sign_in_cancelled">Sign in Cancelled</string>
+
+
     <string name="navigation_drawer_open">Open Drawer</string>
     <string name="navigation_drawer_close">Close Draer</string>
 </resources>
