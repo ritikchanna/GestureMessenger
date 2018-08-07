@@ -17,14 +17,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import leotik.labs.gesturemessenger.Interface.DownloadListner;
@@ -48,6 +53,7 @@ public class RealtimeDB {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestoreSettings = new FirebaseFirestoreSettings.Builder()
                 .setTimestampsInSnapshotsEnabled(true)
+                .setPersistenceEnabled(true)
                 .build();
         firebaseFirestore.setFirestoreSettings(firebaseFirestoreSettings);
         databaseReference = database.getReference();
@@ -64,6 +70,47 @@ public class RealtimeDB {
         }
         return mrealtimeDB;
     }
+
+    public void getFriends(final DownloadListner downloadListner) {
+        final List<UserPOJO> friends = new ArrayList<>();
+        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(final DocumentSnapshot documentSnapshot) {
+                final CollectionReference userbaseRefrence = firebaseFirestore.collection("u");
+                for (Map.Entry<String, Object> entry : documentSnapshot.getData().entrySet())
+                    userbaseRefrence.whereEqualTo("e", entry.getKey());
+
+                userbaseRefrence.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        Log.d("Ritik", "querysuccess: " + queryDocumentSnapshots.getQuery().toString());
+                        Iterator friendsIterator = queryDocumentSnapshots.getDocuments().iterator();
+                        while (friendsIterator.hasNext()) {
+                            DocumentSnapshot snapshot = (DocumentSnapshot) friendsIterator.next();
+                            UserPOJO userPOJO = new UserPOJO();
+                            userPOJO.setE(snapshot.getId());
+                            userPOJO.setN(snapshot.get("n") + "");
+                            userPOJO.setU(snapshot.get("u") + "");
+                            userPOJO.setP(snapshot.get("p") + "");
+                            userPOJO.setS(documentSnapshot.get(snapshot.getId()) + "");
+                            friends.add(userPOJO);
+                            Log.d("Ritik", "onSuccess: " + userPOJO.getU());
+                        }
+
+                        downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, friends);
+                    }
+                });
+
+            }
+        });
+    }
+
+
+
+
+
+
+
 
     public void initUser(@Nullable String Name, String Email, @Nullable String photoUrl, @Nullable String Phoneno) {
         //todo return if succesful by adding listners
@@ -118,20 +165,23 @@ public class RealtimeDB {
                         if (task.getResult().getData() != null) {
                             Log.e("Ritik", "onComplete: " + task.getResult().getData());
                             Map<String, Object> user = task.getResult().getData();
-                            UserPOJO userPOJO = new UserPOJO(entry.getKey(), user.get("n") + "", user.get("u") + "", user.get("p") + "");
+                            UserPOJO userPOJO = new UserPOJO(entry.getKey(), user.get("n") + "", user.get("u") + "", user.get("p") + "", null);
                             databaseHelper.insertUser(userPOJO);
                         }
 
 
                     } else Log.e("Ritik", "onComplete: task failed " + task.getException());
+
+                    downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, "");
                 }
+
             });
             // user.put("s",entry.getValue());
 
 
         }
         if (downloadListner != null) {
-            downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, "");
+
         }
 
     }

@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import leotik.labs.gesturemessenger.POJO.ChatPOJO;
+
 public class ChatsDatabaseHelper extends SQLiteOpenHelper {
 
     // Database Version
@@ -86,6 +88,31 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return ChatUsers;
+    }
+
+    public ArrayList<ChatPOJO> getChats() {
+        ArrayList<ChatPOJO> chats = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CHAT_TABLE,
+                new String[]{COLUMN_SENDER_EMAIL, COLUMN_STATUS, COLUMN_TIME, COLUMN_MESSAGE},
+                null,
+                null, null, null, COLUMN_TIME + " DESC ", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ChatPOJO chat = new ChatPOJO();
+                chat.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_EMAIL)));
+                chat.setMessage(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
+                chat.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                chat.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_TIME)));
+                chats.add(chat);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        return chats;
     }
 
 

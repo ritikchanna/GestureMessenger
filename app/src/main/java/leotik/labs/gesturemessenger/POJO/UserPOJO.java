@@ -9,6 +9,8 @@ public class UserPOJO {
     public String p;
     //email
     public String e;
+    //status
+    public String s;
 
     public UserPOJO(String Email, String Name) {
         n = Name;
@@ -17,11 +19,16 @@ public class UserPOJO {
         u = "";
     }
 
-    public UserPOJO(String Email, String Name, String url, String phone) {
+    public UserPOJO() {
+
+    }
+
+    public UserPOJO(String Email, String Name, String url, String phone, String Status) {
         n = Name;
         e = Email;
         p = phone;
         u = url;
+        s = Status;
     }
 
     public String getN() {
@@ -54,5 +61,13 @@ public class UserPOJO {
 
     public void setE(String e) {
         this.e = e;
+    }
+
+    public String getS() {
+        return s;
+    }
+
+    public void setS(String s) {
+        this.s = s;
     }
 }

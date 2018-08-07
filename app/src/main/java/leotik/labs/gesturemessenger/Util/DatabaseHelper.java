@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
-                cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)));
+                cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)), null);
     }
 
     public List<UserPOJO> getAllUsers() {
@@ -114,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 UserPOJO user = new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                         cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                         cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
-                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)));
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)), null);
 
                 users.add(user);
             } while (cursor.moveToNext());

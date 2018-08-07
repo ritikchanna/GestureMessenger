@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     private static DatabaseHelper databaseHelper;
 
 
-    public ContactsAdapter(Context context) {
+    public ContactsAdapter(Context context, List<UserPOJO> Users) {
         databaseHelper = new DatabaseHelper(context);
-        mUsers = databaseHelper.getAllUsers();
+
+        mUsers = Users;
         launchDrawActivity = new Intent(context, DrawActivity.class);
         mcontext = context;
     }
@@ -46,7 +48,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.profileName.setText(mUsers.get(position).getN());
-        if (mUsers.get(position).getU() != null || mUsers.get(position).getU().equals(""))
+        Log.d("Ritik", "onBindViewHolder: " + mUsers.get(position).getE() + "   " + mUsers.get(position).getU());
+        if (mUsers.get(position).getU() == null || mUsers.get(position).getU().equals("") || mUsers.get(position).getU().equals("null"))
             holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + mUsers.get(position).getE() + ".png"));
         else
             holder.profilePhoto.setImageURI(Uri.parse(mUsers.get(position).getU()));
@@ -57,10 +60,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         return mUsers.size();
     }
 
-    public void updateContacts() {
-        mUsers = databaseHelper.getAllUsers();
-        notifyDataSetChanged();
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
