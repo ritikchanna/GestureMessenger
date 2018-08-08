@@ -69,7 +69,7 @@ public class SplashScreen extends AppCompatActivity {
                             .setIsSmartLockEnabled(false)
                             .setAvailableProviders(Arrays.asList(
                                     new AuthUI.IdpConfig.GoogleBuilder().build(),
-//                                    new AuthUI.IdpConfig.FacebookBuilder().build(),
+                                    new AuthUI.IdpConfig.FacebookBuilder().build(),
 //                                    new AuthUI.IdpConfig.TwitterBuilder().build(),
 //                                    new AuthUI.IdpConfig.GitHubBuilder().build(),
                                     new AuthUI.IdpConfig.EmailBuilder().build()

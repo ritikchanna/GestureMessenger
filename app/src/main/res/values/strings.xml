@@ -7,4 +7,7 @@
 
     <string name="navigation_drawer_open">Open Drawer</string>
     <string name="navigation_drawer_close">Close Draer</string>
+
+    <string name="facebook_application_id" translatable="false">944783255706999</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb944783255706999</string>
 </resources>
