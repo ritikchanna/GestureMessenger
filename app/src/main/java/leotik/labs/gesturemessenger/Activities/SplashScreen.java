@@ -7,23 +7,17 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Util.Constants;
-import leotik.labs.gesturemessenger.Util.RealtimeDB;
-import leotik.labs.gesturemessenger.Util.User;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -45,19 +39,7 @@ public class SplashScreen extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in
-            User user = User.getInstance();
-            user.initUser(SplashScreen.this, null, null);
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
-                @Override
-                public void onSuccess(InstanceIdResult instanceIdResult) {
-
-                    String newToken = instanceIdResult.getToken();
-                    Log.d("Ritik", "onSuccess: " + newToken);
-                    RealtimeDB.getInstance(SplashScreen.this).updatetokenonServer(newToken);
-
-                }
-            });
-            startActivity(new Intent(SplashScreen.this, MainActivity.class));
+            startActivity(new Intent(SplashScreen.this, PhoneAuthActivity.class));
             finish();
         } else {
             // not signed in

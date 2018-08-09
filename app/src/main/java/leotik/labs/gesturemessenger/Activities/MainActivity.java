@@ -21,6 +21,7 @@ import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle;
 
 import leotik.labs.gesturemessenger.Adapters.ChatsAdapter;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Service.BackgroundService;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mdrawer;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //
+        startService(new Intent(MainActivity.this, BackgroundService.class));
     }
 
     @Override

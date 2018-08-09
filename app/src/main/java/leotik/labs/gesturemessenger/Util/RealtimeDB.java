@@ -11,18 +11,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
@@ -76,17 +75,21 @@ public class RealtimeDB {
         firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                final CollectionReference userbaseRefrence = firebaseFirestore.collection("u");
-                for (Map.Entry<String, Object> entry : documentSnapshot.getData().entrySet())
-                    userbaseRefrence.whereEqualTo("e", entry.getKey());
+                Query query = firebaseFirestore.collection("u");
+                for (Map.Entry<String, Object> entry : documentSnapshot.getData().entrySet()) {
 
-                userbaseRefrence.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    query = query.whereEqualTo("e", entry.getKey());
+                }
+
+
+                query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         Log.d("Ritik", "querysuccess: " + queryDocumentSnapshots.getQuery().toString());
                         Iterator friendsIterator = queryDocumentSnapshots.getDocuments().iterator();
                         while (friendsIterator.hasNext()) {
                             DocumentSnapshot snapshot = (DocumentSnapshot) friendsIterator.next();
+                            Log.d("Ritik", "adding: " + snapshot.getData().toString());
                             UserPOJO userPOJO = new UserPOJO();
                             userPOJO.setE(snapshot.getId());
                             userPOJO.setN(snapshot.get("n") + "");
@@ -94,7 +97,8 @@ public class RealtimeDB {
                             userPOJO.setP(snapshot.get("p") + "");
                             userPOJO.setS(documentSnapshot.get(snapshot.getId()) + "");
                             friends.add(userPOJO);
-                            Log.d("Ritik", "onSuccess: " + userPOJO.getU());
+                            Log.d("Ritik", "added: " + userPOJO.getE());
+
                         }
 
                         downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, friends);
@@ -282,35 +286,6 @@ public class RealtimeDB {
 
     }
 
-    public void attachMessageListner() {
-        //todo this can help with delay, but has to keep running use service for it....
-        databaseReference.child("a").child(sanitizeEmail(mUser.getEmail())).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("Ritik", "onChildAdded: " + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     public String sanitizeEmail(String Email) {
         return Email.replace('.', '_');
