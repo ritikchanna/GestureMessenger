@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
@@ -18,10 +19,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.concurrent.TimeUnit;
 
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Util.RealtimeDB;
+import leotik.labs.gesturemessenger.Util.User;
 
 public class PhoneAuthActivity extends AppCompatActivity implements View.OnClickListener {
     public EditText Phone_et, Code_et;
@@ -33,6 +38,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
 
 
     //todo save variable as user might exit current activity
+    //todo show message of not accepting users after message sending failed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +83,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
 
 
     public Boolean isPhoneVerified() {
-        //todo check server if user has verified phone once
-        return false;
+        Log.d("Ritik", "isPhoneVerified: " + FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+        return (!(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber() == null));
     }
 
     @Override
@@ -115,6 +121,16 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void launchMainActivity() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(PhoneAuthActivity.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+
+                String newToken = instanceIdResult.getToken();
+                Log.d("Ritik", "onSuccess: " + newToken);
+                RealtimeDB.getInstance(PhoneAuthActivity.this).updatetokenonServer(newToken);
+
+            }
+        });
         startActivity(new Intent(PhoneAuthActivity.this, MainActivity.class));
         finish();
     }
@@ -127,37 +143,15 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Ritik", "signInWithCredential:success" + FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+                            User user = User.getInstance();
+                            user.initUser(PhoneAuthActivity.this, null);
                             launchMainActivity();
-
-                            //FirebaseUser user = task.getResult().getUser();
-                            // User user = User.getInstance();
-                            //user.initUser(PhoneAuthActivity.this, null, null);
-//                            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(PhoneAuthActivity.this, new OnSuccessListener<InstanceIdResult>() {
-//                                @Override
-//                                public void onSuccess(InstanceIdResult instanceIdResult) {
-//
-//                                    String newToken = instanceIdResult.getToken();
-//                                    Log.d("Ritik", "onSuccess: " + newToken);
-//                                    RealtimeDB.getInstance(PhoneAuthActivity.this).updatetokenonServer(newToken);
-//
-//                                }
-//                            });
-                            // [START_EXCLUDE]
-                            // updateUI(STATE_SIGNIN_SUCCESS, user);
-                            // [END_EXCLUDE]
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w("Ritik", "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                // [START_EXCLUDE silent]
                                 Code_et.setError("Invalid code.");
-                                // [END_EXCLUDE]
                             }
-                            // [START_EXCLUDE silent]
-                            // Update UI
-                            //updateUI(STATE_SIGNIN_FAILED);
-                            // [END_EXCLUDE]
                         }
                     }
                 });

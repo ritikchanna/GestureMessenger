@@ -46,8 +46,15 @@ public class User {
         return firebaseUser.getDisplayName();
     }
 
-    public void initUser(Context context, @Nullable String phoneNo, @Nullable String photo) {
-        RealtimeDB.getInstance(context).initUser(getName(), getEmail(), photo, phoneNo);
+    public String getPhoneNo() {
+        if (firebaseUser == null)
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("Ritik", "getPhoneNo: " + firebaseUser + "  ");
+        return firebaseUser.getPhoneNumber();
+    }
+
+    public void initUser(Context context, @Nullable String photo) {
+        RealtimeDB.getInstance(context).initUser(getName(), getEmail(), photo, getPhoneNo());
 
     }
 

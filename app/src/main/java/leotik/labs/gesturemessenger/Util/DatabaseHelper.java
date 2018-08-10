@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String USER_INFO_COLUMN_NAME = "name";
     private static final String USER_INFO_COLUMN_PHOTO_URL = "photo";
     private static final String USER_INFO_COLUMN_PHONE = "phone";
-    //private static final String USER_INFO_C
+    private static final String USER_INFO_COLUMN_STATUS = "status";
     private static final String USER_INFO_COLUMN_TIMESTAMP = "timestamp";
 
 
@@ -42,6 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + USER_INFO_COLUMN_EMAIL + " TEXT,"
                 + USER_INFO_COLUMN_NAME + " TEXT,"
                 + USER_INFO_COLUMN_PHOTO_URL + " TEXT,"
+                + USER_INFO_COLUMN_STATUS + " TEXT,"
                 + USER_INFO_COLUMN_PHONE + " TEXT,"
                 + USER_INFO_COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP"
                 + ")");
@@ -52,30 +54,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + USER_INFO_TABLE);
-
         // Create tables again
         onCreate(db);
     }
 
-    public long insertUser(String email, String name, String photoUrl, String phone) {
+    public long insertUser(String email, String name, String photoUrl, String phone, String status, @Nullable String timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(USER_INFO_COLUMN_EMAIL, email);
         values.put(USER_INFO_COLUMN_NAME, name);
         values.put(USER_INFO_COLUMN_PHOTO_URL, photoUrl);
         values.put(USER_INFO_COLUMN_PHONE, phone);
+        values.put(USER_INFO_COLUMN_STATUS, status);
+        if (timestamp != null)
+            values.put(USER_INFO_COLUMN_TIMESTAMP, timestamp);
         long id = db.insert(USER_INFO_TABLE, null, values);
         db.close();
         return id;
     }
 
-    public long insertUser(UserPOJO userPOJO) {
+    public long insertUser(UserPOJO userPOJO, @Nullable String timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(USER_INFO_COLUMN_EMAIL, userPOJO.getE());
         values.put(USER_INFO_COLUMN_NAME, userPOJO.getN());
         values.put(USER_INFO_COLUMN_PHOTO_URL, userPOJO.getU());
         values.put(USER_INFO_COLUMN_PHONE, userPOJO.getP());
+        values.put(USER_INFO_COLUMN_STATUS, userPOJO.getS());
+        if (timestamp != null)
+            values.put(USER_INFO_COLUMN_TIMESTAMP, timestamp);
         long id = db.insert(USER_INFO_TABLE, null, values);
         db.close();
         return id;
@@ -95,7 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
-                cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)), null);
+                cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)),
+                cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_STATUS)));
     }
 
     public List<UserPOJO> getAllUsers() {
@@ -114,7 +122,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 UserPOJO user = new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                         cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                         cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
-                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)), null);
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)),
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_STATUS)));
 
                 users.add(user);
             } while (cursor.moveToNext());
@@ -164,6 +173,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // return count
         return count;
     }
+
+    public String getlastUserupdate() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(USER_INFO_TABLE,
+                new String[]{USER_INFO_COLUMN_TIMESTAMP},
+                null, null, null, null, USER_INFO_COLUMN_TIMESTAMP + " DESC ", String.valueOf(1));
+
+        if (cursor != null && cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_TIMESTAMP));
+        } else return "0";
+
+    }
+
 
 
 

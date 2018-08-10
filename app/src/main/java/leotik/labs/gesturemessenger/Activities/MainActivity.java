@@ -16,8 +16,10 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle;
+import com.google.firebase.auth.FirebaseAuth;
 
 import leotik.labs.gesturemessenger.Adapters.ChatsAdapter;
 import leotik.labs.gesturemessenger.R;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton fab_send_new;
+    private ImageButton imageButton4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +93,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //todo find someplace else for this
-//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( this,  new OnSuccessListener<InstanceIdResult>() {
-//            @Override
-//            public void onSuccess(InstanceIdResult instanceIdResult) {
-//                String newToken = instanceIdResult.getToken();
-//                RealtimeDB.getInstance(MainActivity.this).updatetokenonServer(newToken);
-//
-//            }
-//        });
-//
+
+        imageButton4 = findViewById(R.id.imageButton4);
+        imageButton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+            }
+        });
         startService(new Intent(MainActivity.this, BackgroundService.class));
     }
 

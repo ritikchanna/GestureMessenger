@@ -36,7 +36,7 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
 
 
         
-        var tokenRef = db.collection('t').doc(reciever);
+        var tokenRef = db.collection(reciever).doc('t');
         console.log('Fetching Token');
         tokenRef.get()
             .then(doc => {

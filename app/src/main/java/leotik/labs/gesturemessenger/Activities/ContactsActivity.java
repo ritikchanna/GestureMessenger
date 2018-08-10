@@ -15,13 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import leotik.labs.gesturemessenger.Adapters.ContactsAdapter;
 import leotik.labs.gesturemessenger.Interface.DownloadListner;
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Util.DatabaseHelper;
 import leotik.labs.gesturemessenger.Util.RealtimeDB;
 
 public class ContactsActivity extends AppCompatActivity implements DownloadListner {
@@ -31,6 +31,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
     private FloatingActionButton fab_add;
     private SwipeRefreshLayout swipeContainer;
     private List<UserPOJO> mUsers;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RealtimeDB.getInstance(ContactsActivity.this).getFriends(ContactsActivity.this);
+                RealtimeDB.getInstance(ContactsActivity.this).UpdateContacts(ContactsActivity.this);
                 //  RealtimeDB.getInstance(ContactsActivity.this).attachFriendListListner(ContactsActivity.this);
             }
         });
@@ -57,11 +58,10 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         mRecyclerView = findViewById(R.id.contacts_list);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mUsers = new ArrayList<>();
+        databaseHelper = new DatabaseHelper(ContactsActivity.this);
+        mUsers = databaseHelper.getAllUsers();
         mAdapter = new ContactsAdapter(ContactsActivity.this, mUsers);
         mRecyclerView.setAdapter(mAdapter);
-        RealtimeDB.getInstance(ContactsActivity.this).getFriends(ContactsActivity.this);
-        swipeContainer.setRefreshing(true);
         fab_add = findViewById(R.id.fab_new_contact);
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +97,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
     @Override
     public void OnDownloadResult(int ResponseCode, Object Response) {
         mUsers.clear();
-        mUsers.addAll((ArrayList<UserPOJO>) Response);
+        mUsers.addAll(databaseHelper.getAllUsers());
         mAdapter.notifyDataSetChanged();
         swipeContainer.setRefreshing(false);
 
