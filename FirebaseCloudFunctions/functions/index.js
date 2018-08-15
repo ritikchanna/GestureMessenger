@@ -12,12 +12,13 @@ var reciever = 'reciever_value';
 var message = 'message_value';
 var payload ='payload_value';
 var db = admin.firestore();
+
  
 
 
 exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
     .onCreate((snapshot, context) => {
-        console.log('v19');
+        console.log('v21');
          message = context.params.messageid;
         console.log('Message Id:', message);
 
@@ -30,6 +31,7 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
                             id: `${message}`,
                             sender: `${sender}`
                         }
+                         
                
                     };
         console.log('Payload Created');
@@ -48,21 +50,12 @@ exports.sendFollowerNotification = functions.database.ref('/m/{messageid}')
                     console.log('Token data:', token);
 
                 }
-                console.log('End Then');
-                return token;
+                
+                return admin.messaging().sendToDevice(token,payload);
 
             })
             .catch(err => {
-                console.log('Error getting token', err);
-            }).then((token) => {
-                console.log('Sending FCM now');
-                admin.messaging().sendToDevice(token,payload);
-                return console.log('Successfully sent message:');
-            })
-            .catch((error) => {
-                console.log('Error sending message:', error);
+                console.log('Error sending fcm', err);
             });
-
-
 
     })
