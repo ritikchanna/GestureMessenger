@@ -25,6 +25,7 @@ public class BackgroundService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d("Ritik", "Background Service onCreate: ");
         //Realtime Database related inits
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
@@ -67,9 +68,9 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        if (!(email == null))
-            databaseReference.child("a").child(sanitizeEmail(email)).addChildEventListener(childEventListener);
+        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        if (!(phoneNumber == null))
+            databaseReference.child("a").child(phoneNumber).addChildEventListener(childEventListener);
         return Service.START_STICKY;
     }
 
@@ -82,14 +83,13 @@ public class BackgroundService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.d("Ritik", "BackgroundService onDestroy: ");
         Intent intent = new Intent("leotik.labs.gesturemessenger.startservice");
         //intent.putExtra("yourvalue", "torestore");
         sendBroadcast(intent);
     }
 
-    public String sanitizeEmail(String Email) {
-        return Email.replace('.', '_');
-    }
+
 
 
 }

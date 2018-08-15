@@ -88,17 +88,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public UserPOJO getUser(String email) {
-        Log.d("Ritik", "getUser: " + email);
+    public UserPOJO getUser(String phone) {
+        Log.d("Ritik", "getUser: " + phone);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_INFO_TABLE,
-                new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_TIMESTAMP},
-                USER_INFO_COLUMN_EMAIL + "=?",
-                new String[]{email}, null, null, null, null);
+                new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_TIMESTAMP,USER_INFO_COLUMN_STATUS},
+                USER_INFO_COLUMN_PHONE + "=?",
+                new String[]{phone}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
-        Log.d("Ritik", "getUser: " + cursor.getColumnCount());
+        Log.d("Ritik", "getUser: " + cursor.getCount());
         return new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),

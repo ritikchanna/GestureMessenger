@@ -252,21 +252,29 @@ public class RealtimeDB {
     public void sendMessage(String Receiver, String Gesture, final DownloadListner downloadListner) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
-        String Sender = sanitizeEmail(mUser.getEmail());
-        Receiver = sanitizeEmail(Receiver);
+        Log.d("Ritik", "sendMessage: "+Receiver);
+        String Sender = mUser.getPhoneNo();
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
         msg.put("r", Receiver);
         msg.put("m", Gesture);
-        databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnSuccessListener(new OnSuccessListener<Void>() {
+        databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("Ritik", "onComplete: ");
+            }
+        })
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                Log.d("Ritik", "onsuccess: ");
                 downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
 
             }
         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d("Ritik", "onfailiure: ");
                         downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
                     }
                 });

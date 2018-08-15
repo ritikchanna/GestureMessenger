@@ -1,5 +1,7 @@
 package leotik.labs.gesturemessenger.Service;
 
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -20,6 +22,10 @@ public class FCMservice extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // super.onMessageReceived(remoteMessage);
+
+            startService(new Intent(getApplicationContext(), BackgroundService.class));
+
+
         Map<String, String> data = remoteMessage.getData();
         Log.d("Ritik", "onMessageReceived: +" + data.toString());
         if (data.containsKey("id")) {

@@ -76,7 +76,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
         @Override
         public void onClick(View view) {
-            launchDrawActivity.putExtra("email", mUsers.get(getAdapterPosition()).getE());
+            launchDrawActivity.putExtra("phone", mUsers.get(getAdapterPosition()).getP());
             mcontext.startActivity(launchDrawActivity);
             ((AppCompatActivity) mcontext).finish();
 

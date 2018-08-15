@@ -38,15 +38,15 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(12);
         dv.setPaint(mPaint);
-        final String Email = getIntent().getStringExtra("email");
-        if (Email == null)
+        final String Phone = getIntent().getStringExtra("phone");
+        if (Phone == null)
             finish();
         send_fab = findViewById(R.id.send_fab);
         send_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showaddDialog(true);
-                RealtimeDB.getInstance(DrawActivity.this).sendMessage(Email, dv.gesture + "s" + dv.size, DrawActivity.this);
+                RealtimeDB.getInstance(DrawActivity.this).sendMessage(Phone, dv.gesture + "s" + dv.size, DrawActivity.this);
             }
         });
         progressBar = new ProgressBar(this);
