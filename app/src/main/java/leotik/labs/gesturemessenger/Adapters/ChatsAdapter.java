@@ -47,10 +47,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserPOJO user = databaseHelper.getUser(mChats.get(position).getEmail());
+        UserPOJO user = databaseHelper.getUser(mChats.get(position).getSender());
         holder.profileName.setText(user.getN());
         if (user.getU() != null || user.getU().equals(""))
-            holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + mChats.get(position).getEmail() + ".png"));
+            holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + mChats.get(position).getSender() + ".png"));
         else
             holder.profilePhoto.setImageURI(Uri.parse(user.getU()));
     }
@@ -81,6 +81,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         public void onClick(View view) {
             Intent intent = new Intent(mcontext, OverlayService.class);
             intent.putExtra("gesture", mChats.get(getAdapterPosition()).getMessage());
+            UserPOJO sender = databaseHelper.getUser(mChats.get(getAdapterPosition()).getSender());
+            intent.putExtra("sender_name", sender.getN());
+            intent.putExtra("sender_picture", sender.getU());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mcontext.startForegroundService(intent);
             } else {

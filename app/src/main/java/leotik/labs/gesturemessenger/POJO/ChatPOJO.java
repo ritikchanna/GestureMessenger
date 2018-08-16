@@ -1,17 +1,17 @@
 package leotik.labs.gesturemessenger.POJO;
 
 public class ChatPOJO {
-    private String Email;
+    private String Sender;
     private String Time;
     private String Message;
     private String Status;
 
-    public String getEmail() {
-        return Email;
+    public String getSender() {
+        return Sender;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setSender(String sender) {
+        Sender = sender;
     }
 
     public String getTime() {

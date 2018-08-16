@@ -21,7 +21,7 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "chats_db";
     private static final String CHAT_TABLE = "chats";
     private static final String COLUMN_ID = "id";
-    private static final String COLUMN_SENDER_EMAIL = "email";
+    private static final String COLUMN_SENDER = "phone";
     private static final String COLUMN_TIME = "time";
     private static final String COLUMN_MESSAGE = "message";
     private static final String COLUMN_STATUS = "status";
@@ -36,7 +36,7 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + CHAT_TABLE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_SENDER_EMAIL + " TEXT,"
+                + COLUMN_SENDER + " TEXT,"
                 + COLUMN_MESSAGE + " TEXT,"
                 + COLUMN_TIME + " TEXT,"
                 + COLUMN_STATUS + " TEXT"
@@ -58,7 +58,7 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_MESSAGE, message);
-        values.put(COLUMN_SENDER_EMAIL, sender);
+        values.put(COLUMN_SENDER, sender);
         values.put(COLUMN_STATUS, status);
         values.put(COLUMN_TIME, time);
         long id = db.insert(CHAT_TABLE, null, values);
@@ -74,13 +74,13 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         List<String> ChatUsers = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CHAT_TABLE,
-                new String[]{COLUMN_SENDER_EMAIL},
+                new String[]{COLUMN_SENDER},
                 null,
                 null, COLUMN_MESSAGE, null, COLUMN_TIME + " DESC ", null);
 
         if (cursor.moveToFirst()) {
             do {
-                ChatUsers.add(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_EMAIL)));
+                ChatUsers.add(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER)));
             } while (cursor.moveToNext());
         }
 
@@ -94,14 +94,14 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         ArrayList<ChatPOJO> chats = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CHAT_TABLE,
-                new String[]{COLUMN_SENDER_EMAIL, COLUMN_STATUS, COLUMN_TIME, COLUMN_MESSAGE},
+                new String[]{COLUMN_SENDER, COLUMN_STATUS, COLUMN_TIME, COLUMN_MESSAGE},
                 null,
                 null, null, null, COLUMN_TIME + " DESC ", null);
 
         if (cursor.moveToFirst()) {
             do {
                 ChatPOJO chat = new ChatPOJO();
-                chat.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_EMAIL)));
+                chat.setSender(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER)));
                 chat.setMessage(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
                 chat.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
                 chat.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_TIME)));

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -16,10 +17,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Views.GestureOverlayView;
@@ -29,7 +33,7 @@ import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 public class OverlayService extends Service {
     private WindowManager mWindowManager;
     private GestureOverlayView mChatHeadView;
-    private ImageButton btnClose;
+    private View HeaderView;
 
 
     public OverlayService() {
@@ -74,16 +78,18 @@ public class OverlayService extends Service {
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mChatHeadView, params);
 
-        params1.gravity = Gravity.TOP | Gravity.RIGHT;
-        btnClose = new ImageButton(this);
-        btnClose.setBackground(getDrawable(R.drawable.cancel));
-        btnClose.setOnClickListener(new View.OnClickListener() {
+        params1.gravity = Gravity.TOP;
+        HeaderView = LayoutInflater.from(this).inflate(R.layout.overlay_header, null);
+        HeaderView.findViewById(R.id.overlay_close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 stopSelf();
             }
         });
-        mWindowManager.addView(btnClose, params1);
+        mWindowManager.addView(HeaderView, params1);
+
+
+
 
     }
 
@@ -93,7 +99,7 @@ public class OverlayService extends Service {
         super.onDestroy();
         if (mChatHeadView != null) {
             mWindowManager.removeView(mChatHeadView);
-            mWindowManager.removeView(btnClose);
+            mWindowManager.removeView(HeaderView);
         }
     }
 
@@ -101,6 +107,14 @@ public class OverlayService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //todo service closes on ram clear, showing notification can be possible fix, doesnt work on oreo
         startForeground(36, getNotification());
+        String name = intent.getStringExtra("sender_name");
+        ((TextView) HeaderView.findViewById(R.id.overlay_name)).setText(name);
+        String url = intent.getStringExtra("sender_picture");
+        if (url == null || url.equals("") || url.equals("null"))
+            ((SimpleDraweeView) HeaderView.findViewById(R.id.overlay_photo)).setImageURI(Uri.parse("http://flathash.com/" + name + ".png"));
+        else
+            ((SimpleDraweeView) HeaderView.findViewById(R.id.overlay_photo)).setImageURI(Uri.parse(url));
+
         mChatHeadView.startIt(100, intent.getStringExtra("gesture"));
         return super.onStartCommand(intent, flags, startId);
     }

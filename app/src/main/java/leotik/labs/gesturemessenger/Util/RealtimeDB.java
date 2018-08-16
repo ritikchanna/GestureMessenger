@@ -307,6 +307,14 @@ public class RealtimeDB {
                 Log.e("Ritik", "onDataChange: " + gesture);
                 Intent intent = new Intent(context, OverlayService.class);
                 intent.putExtra("gesture", gesture);
+                UserPOJO user = databaseHelper.getUser(sender);
+                if (user == null) {
+                    intent.putExtra("sender_name", "demo");
+                    intent.putExtra("sender_picture", "");
+                } else {
+                    intent.putExtra("sender_name", user.getN());
+                    intent.putExtra("sender_picture", user.getU());
+                }
                 //todo check if should be drawn otherwise drop notification
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(intent);

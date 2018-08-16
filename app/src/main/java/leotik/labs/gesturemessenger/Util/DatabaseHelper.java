@@ -98,7 +98,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null)
             cursor.moveToFirst();
-        Log.d("Ritik", "getUser: " + cursor.getCount());
+
+
+        if (cursor.getCount() == 0)
+            return null;
+
         return new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
