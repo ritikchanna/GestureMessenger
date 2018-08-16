@@ -2,7 +2,6 @@ package leotik.labs.gesturemessenger.Util;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,20 +41,26 @@ public class User {
     public String getName() {
         if (firebaseUser == null)
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("Ritik", "getName: " + firebaseUser + "  ");
         return firebaseUser.getDisplayName();
     }
 
     public String getPhoneNo() {
         if (firebaseUser == null)
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("Ritik", "getPhoneNo: " + firebaseUser + "  ");
         return firebaseUser.getPhoneNumber();
     }
 
-    public void initUser(Context context, @Nullable String photo) {
-        RealtimeDB.getInstance(context).initUser(getName(), getEmail(), photo, getPhoneNo());
+    public String getPhoto() {
+        if (firebaseUser == null)
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUser.getPhotoUrl().toString();
+    }
 
+    public void initUser(Context context, @Nullable String photo) {
+        if (photo == null) {
+            RealtimeDB.getInstance(context).initUser(getName(), getEmail(), getPhoto(), getPhoneNo());
+        } else
+            RealtimeDB.getInstance(context).initUser(getName(), getEmail(), photo, getPhoneNo());
     }
 
 
