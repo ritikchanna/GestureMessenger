@@ -60,7 +60,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Activities.PhoneAuthActivity"></activity>
+        <activity android:name=".Activities.PhoneAuthActivity" />
+        <activity android:name=".Activities.ConversationActivity"></activity>
     </application>
 
 </manifest>

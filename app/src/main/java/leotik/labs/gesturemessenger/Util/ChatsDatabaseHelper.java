@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leotik.labs.gesturemessenger.POJO.ChatPOJO;
+import leotik.labs.gesturemessenger.POJO.UserPOJO;
 
 public class ChatsDatabaseHelper extends SQLiteOpenHelper {
 
@@ -25,10 +26,12 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TIME = "time";
     private static final String COLUMN_MESSAGE = "message";
     private static final String COLUMN_STATUS = "status";
+    private DatabaseHelper databaseHelper;
 
 
     public ChatsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        databaseHelper = new DatabaseHelper(context);
     }
 
 
@@ -70,17 +73,18 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         //todo
     }
 
-    public List<String> getChatUsers() {
-        List<String> ChatUsers = new ArrayList<>();
+    public ArrayList<UserPOJO> getChatUsers() {
+        ArrayList<UserPOJO> ChatUsers = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CHAT_TABLE,
                 new String[]{COLUMN_SENDER},
                 null,
-                null, COLUMN_MESSAGE, null, COLUMN_TIME + " DESC ", null);
+                null, COLUMN_SENDER, null, COLUMN_TIME + " DESC ", null);
 
         if (cursor.moveToFirst()) {
             do {
-                ChatUsers.add(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER)));
+                UserPOJO user = databaseHelper.getUser(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER)));
+                ChatUsers.add(user);
             } while (cursor.moveToNext());
         }
 
@@ -97,6 +101,32 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
                 new String[]{COLUMN_SENDER, COLUMN_STATUS, COLUMN_TIME, COLUMN_MESSAGE},
                 null,
                 null, null, null, COLUMN_TIME + " DESC ", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                ChatPOJO chat = new ChatPOJO();
+                chat.setSender(cursor.getString(cursor.getColumnIndex(COLUMN_SENDER)));
+                chat.setMessage(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
+                chat.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
+                chat.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_TIME)));
+                chats.add(chat);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        return chats;
+    }
+
+
+    public List<ChatPOJO> getChat(String phone) {
+        List<ChatPOJO> chats = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CHAT_TABLE,
+                new String[]{COLUMN_SENDER, COLUMN_STATUS, COLUMN_TIME, COLUMN_MESSAGE},
+                COLUMN_SENDER + "=?",
+                new String[]{phone}, null, null, COLUMN_TIME + " ASC ", null);
 
         if (cursor.moveToFirst()) {
             do {

@@ -88,9 +88,6 @@ public class OverlayService extends Service {
         });
         mWindowManager.addView(HeaderView, params1);
 
-
-
-
     }
 
 

@@ -258,6 +258,7 @@ public class RealtimeDB {
         msg.put("s", Sender);
         msg.put("r", Receiver);
         msg.put("m", Gesture);
+        msg.put("t", (System.currentTimeMillis()) + "");
         databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -309,7 +310,7 @@ public class RealtimeDB {
                 intent.putExtra("gesture", gesture);
                 UserPOJO user = databaseHelper.getUser(sender);
                 if (user == null) {
-                    intent.putExtra("sender_name", "demo");
+                    intent.putExtra("sender_name", sender);
                     intent.putExtra("sender_picture", "");
                 } else {
                     intent.putExtra("sender_name", user.getN());
