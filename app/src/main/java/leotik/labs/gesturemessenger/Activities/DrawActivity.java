@@ -5,9 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +22,7 @@ import leotik.labs.gesturemessenger.Views.GestureDrawView;
 public class DrawActivity extends AppCompatActivity implements DownloadListner {
 
     public GestureDrawView dv;
-    private FloatingActionButton send_fab;
+    private ImageButton send_btn;
     private Paint mPaint;
     private AlertDialog alertDialog;
     private ProgressBar progressBar;
@@ -66,9 +66,9 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
         else
             ((TextView) headerView.findViewById(R.id.overlay_name)).setText(Name);
 
-        send_fab = headerView.findViewById(R.id.send_fab);
-        send_fab.setVisibility(View.VISIBLE);
-        send_fab.setOnClickListener(new View.OnClickListener() {
+        send_btn = headerView.findViewById(R.id.overlay_send_btn);
+        send_btn.setVisibility(View.VISIBLE);
+        send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showsendDialog(true);
@@ -79,11 +79,11 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
 
     public void showsendDialog(Boolean show) {
         if (show) {
-            send_fab.hide();
+            send_btn.setVisibility(View.GONE);
             alertDialog.show();
         } else {
             alertDialog.hide();
-            send_fab.show();
+            send_btn.setVisibility(View.VISIBLE);
         }
     }
 
