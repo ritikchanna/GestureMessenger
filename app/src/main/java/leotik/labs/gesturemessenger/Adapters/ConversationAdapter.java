@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import leotik.labs.gesturemessenger.POJO.ChatPOJO;
@@ -46,6 +49,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     public static String getTime(String timeinmilli) {
 
         long millis = Long.parseLong(timeinmilli);
+        Calendar mCalendar = new GregorianCalendar();
+        TimeZone mTimeZone = mCalendar.getTimeZone();
+        int mGMTOffset = mTimeZone.getRawOffset();
+        millis = millis + mGMTOffset;
 
         if (millis < 0) {
             throw new IllegalArgumentException("Duration must be greater than zero!");
@@ -60,7 +67,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String Date = "";
         try {
-            Date date = new SimpleDateFormat("D").parse(String.valueOf(days));
+            Date date = new SimpleDateFormat("D").parse(String.valueOf(days + 1));
             Date = formatter.format(date);
         } catch (Exception e) {
             Log.e("ritik", "getTime: " + e.getMessage());
