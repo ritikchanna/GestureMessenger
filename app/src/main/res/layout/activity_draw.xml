@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".Activities.DrawActivity">
 
+    <include
+        android:id="@+id/header_VIEW"
+        layout="@layout/overlay_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
     <leotik.labs.gesturemessenger.Views.GestureDrawView
         android:id="@+id/draw_view"
         android:layout_width="wrap_content"

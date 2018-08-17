@@ -3,11 +3,16 @@ package leotik.labs.gesturemessenger.Activities;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import leotik.labs.gesturemessenger.Interface.DownloadListner;
 import leotik.labs.gesturemessenger.R;
@@ -21,6 +26,7 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
     private Paint mPaint;
     private AlertDialog alertDialog;
     private ProgressBar progressBar;
+    private RelativeLayout headerView;
 
 
 
@@ -39,13 +45,15 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
         mPaint.setStrokeWidth(12);
         dv.setPaint(mPaint);
         final String Phone = getIntent().getStringExtra("phone");
+        final String Name = getIntent().getStringExtra("name");
+        final String Photo = getIntent().getStringExtra("photo");
         if (Phone == null)
             finish();
         send_fab = findViewById(R.id.send_fab);
         send_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showaddDialog(true);
+                showsendDialog(true);
                 RealtimeDB.getInstance(DrawActivity.this).sendMessage(Phone, dv.gesture + "s" + dv.size, DrawActivity.this);
             }
         });
@@ -55,9 +63,19 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
                 .setMessage("Sending Message")
                 .setView(progressBar)
                 .create();
+        headerView = findViewById(R.id.header_VIEW);
+        headerView.findViewById(R.id.overlay_close_btn).setVisibility(View.GONE);
+        if (Photo == null || Photo.equals("") || Photo.equals("null"))
+            ((SimpleDraweeView) headerView.findViewById(R.id.overlay_photo)).setImageURI(Uri.parse("http://flathash.com/" + Phone + ".png"));
+        else
+            ((SimpleDraweeView) headerView.findViewById(R.id.overlay_photo)).setImageURI(Uri.parse(Photo));
+        if (Name == null || Name.equals("") || Name.equals("null"))
+            ((TextView) headerView.findViewById(R.id.overlay_name)).setText(Phone);
+        else
+            ((TextView) headerView.findViewById(R.id.overlay_name)).setText(Name);
     }
 
-    public void showaddDialog(Boolean show) {
+    public void showsendDialog(Boolean show) {
         if (show) {
             send_fab.hide();
             alertDialog.show();
@@ -69,13 +87,13 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
 
     @Override
     public void OnDownloadResult(int ResponseCode, Object Response) {
-        showaddDialog(false);
+        showsendDialog(false);
 
     }
 
     @Override
     public void OnErrorDownloadResult(int ResponseCode) {
-        showaddDialog(false);
+        showsendDialog(false);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Oops !!")
                 .setMessage("Something went wrong, Message not sent")

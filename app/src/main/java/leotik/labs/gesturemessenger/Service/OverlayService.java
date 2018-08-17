@@ -62,7 +62,7 @@ public class OverlayService extends Service {
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT);
         final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 //WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
