@@ -49,14 +49,6 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
         final String Photo = getIntent().getStringExtra("photo");
         if (Phone == null)
             finish();
-        send_fab = findViewById(R.id.send_fab);
-        send_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showsendDialog(true);
-                RealtimeDB.getInstance(DrawActivity.this).sendMessage(Phone, dv.gesture + "s" + dv.size, DrawActivity.this);
-            }
-        });
         progressBar = new ProgressBar(this);
         alertDialog = new AlertDialog.Builder(this)
                 //.setTitle("Sendin")
@@ -73,6 +65,16 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
             ((TextView) headerView.findViewById(R.id.overlay_name)).setText(Phone);
         else
             ((TextView) headerView.findViewById(R.id.overlay_name)).setText(Name);
+
+        send_fab = headerView.findViewById(R.id.send_fab);
+        send_fab.setVisibility(View.VISIBLE);
+        send_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showsendDialog(true);
+                RealtimeDB.getInstance(DrawActivity.this).sendMessage(Phone, dv.gesture + "s" + dv.size, DrawActivity.this);
+            }
+        });
     }
 
     public void showsendDialog(Boolean show) {

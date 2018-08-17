@@ -20,7 +20,9 @@
         <activity
             android:name=".Activities.MainActivity"
             android:hardwareAccelerated="true" />
-        <activity android:name=".Activities.DrawActivity" />
+        <activity
+            android:name=".Activities.DrawActivity"
+            android:theme="@style/AppThemeTransparent" />
 
         <service
             android:name=".Service.OverlayService"
