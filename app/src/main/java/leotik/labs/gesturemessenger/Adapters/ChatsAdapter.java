@@ -18,6 +18,8 @@ import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Util.ChatsDatabaseHelper;
 
+import static leotik.labs.gesturemessenger.Util.Helper.getTime;
+
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> {
     private static ArrayList<UserPOJO> users;
     private static Context mcontext;
@@ -43,12 +45,19 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.lastMsgtime.setVisibility(View.GONE);
         UserPOJO user = users.get(position);
         holder.profileName.setText(user.getN());
         if (user.getU() == null || user.getU().equals(""))
             holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + user.getN() + ".png"));
         else
             holder.profilePhoto.setImageURI(Uri.parse(user.getU()));
+        String time = chatsDatabaseHelper.getLastMsgTime(user.getP());
+        if (time != null) {
+            time = getTime(time);
+            holder.lastMsgtime.setText(time);
+            holder.lastMsgtime.setVisibility(View.VISIBLE);
+        }
     }
 
     public void updateChats() {
@@ -63,13 +72,14 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
         public SimpleDraweeView profilePhoto;
-        public TextView profileName;
+        public TextView profileName, lastMsgtime;
 
 
         public ViewHolder(View v) {
             super(v);
             profilePhoto = v.findViewById(R.id.contact_photo);
             profileName = v.findViewById(R.id.contact_name);
+            lastMsgtime = v.findViewById(R.id.chat_time);
             v.setOnClickListener(this);
         }
 

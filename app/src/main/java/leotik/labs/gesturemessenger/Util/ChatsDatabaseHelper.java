@@ -94,6 +94,23 @@ public class ChatsDatabaseHelper extends SQLiteOpenHelper {
         return ChatUsers;
     }
 
+    public String getLastMsgTime(String user) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CHAT_TABLE,
+                new String[]{COLUMN_TIME},
+                COLUMN_SENDER + "=?",
+                new String[]{user}, null, null, COLUMN_TIME + " DESC ", "1");
+
+        if (cursor.moveToFirst()) {
+            db.close();
+            return cursor.getString(cursor.getColumnIndex(COLUMN_TIME));
+
+
+        }
+        db.close();
+        return null;
+    }
+
     public ArrayList<ChatPOJO> getChats() {
         ArrayList<ChatPOJO> chats = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import leotik.labs.gesturemessenger.POJO.ChatPOJO;
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
@@ -27,6 +19,8 @@ import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Service.OverlayService;
 import leotik.labs.gesturemessenger.Util.ChatsDatabaseHelper;
 import leotik.labs.gesturemessenger.Util.DatabaseHelper;
+
+import static leotik.labs.gesturemessenger.Util.Helper.getTime;
 
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ViewHolder> {
     private static List<ChatPOJO> mMessages;
@@ -46,43 +40,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         mcontext = context;
     }
 
-    public static String getTime(String timeinmilli) {
-
-        long millis = Long.parseLong(timeinmilli);
-        Calendar mCalendar = new GregorianCalendar();
-        TimeZone mTimeZone = mCalendar.getTimeZone();
-        int mGMTOffset = mTimeZone.getRawOffset();
-        millis = millis + mGMTOffset;
-
-        if (millis < 0) {
-            throw new IllegalArgumentException("Duration must be greater than zero!");
-        }
-        long days = TimeUnit.MILLISECONDS.toDays(millis);
-        millis -= TimeUnit.DAYS.toMillis(days);
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        millis -= TimeUnit.HOURS.toMillis(hours);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-        millis -= TimeUnit.MINUTES.toMillis(minutes);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String Date = "";
-        try {
-            Date date = new SimpleDateFormat("D").parse(String.valueOf(days + 1));
-            Date = formatter.format(date);
-        } catch (Exception e) {
-            Log.e("ritik", "getTime: " + e.getMessage());
-        }
-        StringBuilder sb = new StringBuilder(64);
-
-        sb.append(Date);
-        sb.append(" ");
-        sb.append(hours);
-        sb.append(":");
-        sb.append(minutes);
-        sb.append(":");
-        sb.append(seconds);
-        return (sb.toString());
-    }
 
     @Override
     public ConversationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
