@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -43,7 +44,7 @@ public class ConversationActivity extends AppCompatActivity {
         photoTitle.setImageURI(Uri.parse(Photo));
         //actionbar.setTitle(Name);
         actionbar.setDisplayShowTitleEnabled(false);
-        actionbar.setDisplayUseLogoEnabled(true);
+        actionbar.setDisplayUseLogoEnabled(false);
         conversationRecyclerView = findViewById(R.id.message_list);
         mLayoutManager = new LinearLayoutManager(this);
         conversationRecyclerView.setLayoutManager(mLayoutManager);
@@ -57,6 +58,16 @@ public class ConversationActivity extends AppCompatActivity {
                 //todo send intent to draw activity
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
