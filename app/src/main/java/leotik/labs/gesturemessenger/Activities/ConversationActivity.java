@@ -1,5 +1,6 @@
 package leotik.labs.gesturemessenger.Activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,11 +22,12 @@ public class ConversationActivity extends AppCompatActivity {
 
     private RecyclerView conversationRecyclerView;
     private FloatingActionButton newMsgfab;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private ConversationAdapter mAdapter;
     private String Photo, Phone, Name;
     private TextView nameTitle;
     private SimpleDraweeView photoTitle;
+    private Intent launchDrawActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class ConversationActivity extends AppCompatActivity {
         actionbar.setDisplayUseLogoEnabled(false);
         conversationRecyclerView = findViewById(R.id.message_list);
         mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setStackFromEnd(true);
         conversationRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ConversationAdapter(ConversationActivity.this, Phone);
         conversationRecyclerView.setAdapter(mAdapter);
@@ -54,8 +57,11 @@ public class ConversationActivity extends AppCompatActivity {
         newMsgfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //todo send intent to draw activity
+                launchDrawActivity = new Intent(ConversationActivity.this, DrawActivity.class);
+                launchDrawActivity.putExtra("phone", Phone);
+                launchDrawActivity.putExtra("name", Name);
+                launchDrawActivity.putExtra("photo", Photo);
+                startActivity(launchDrawActivity);
             }
         });
     }
