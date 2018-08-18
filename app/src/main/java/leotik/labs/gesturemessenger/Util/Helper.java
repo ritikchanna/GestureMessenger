@@ -49,9 +49,10 @@ public class Helper {
         }
         sb.append(hours);
         sb.append(":");
-        sb.append(minutes);
-        sb.append(":");
-        sb.append(seconds);
+        String mins = String.valueOf(minutes);
+        sb.append(new String(new char[2 - mins.length()]).replace('\0', '0') + mins);
+        // sb.append(":");
+        // sb.append(seconds);
         return (sb.toString());
     }
 

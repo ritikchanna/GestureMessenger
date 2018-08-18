@@ -86,7 +86,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(mcontext, ConversationActivity.class);
-            intent.putExtra("user", users.get(getAdapterPosition()).getN());
+            intent.putExtra("phone", users.get(getAdapterPosition()).getP());
+            intent.putExtra("name", users.get(getAdapterPosition()).getN());
+            intent.putExtra("photo", users.get(getAdapterPosition()).getU());
             mcontext.startActivity(intent);
         }
     }

@@ -41,6 +41,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setTitle(getString(R.string.contacts_activity_title));
         swipeContainer = findViewById(R.id.swiperefresh);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
