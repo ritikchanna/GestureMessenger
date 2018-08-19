@@ -1,7 +1,6 @@
 package leotik.labs.gesturemessenger.Service;
 
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -28,12 +27,25 @@ public class FCMservice extends FirebaseMessagingService {
 
         Map<String, String> data = remoteMessage.getData();
         Log.d("Ritik", "onMessageReceived: +" + data.toString());
-        if (data.containsKey("id")) {
-            Log.d("Ritik", "onMessageReceived: id found");
-            String id = data.get("id");
-            RealtimeDB.getInstance(getApplicationContext()).displayGesture(id);
+        if (data.containsKey("type")) {
+            String type = data.get("type");
+            switch (type) {
+                case "message":
+                    Log.d("Ritik", "onMessageReceived: message");
+                    String id = data.get("id");
+                    RealtimeDB.getInstance(getApplicationContext()).displayGesture(id);
+                    break;
+                case "friend":
+                    Log.d("Ritik", "onMessageReceived: message");
+                    Log.d("Ritik", "onMessageReceived: " + data.get("user") + data.get("user2") + data.get("status") + data.get("time"));
+                    break;
+                default:
+                    Log.e("Ritik", "onMessageReceived: invalid type value " + data.toString());
+                    break;
+            }
 
-        }
+        } else
+            Log.e("Ritik", "onMessageReceived: No type value " + data.toString());
     }
 
 
