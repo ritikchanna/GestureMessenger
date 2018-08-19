@@ -3,7 +3,6 @@ package leotik.labs.gesturemessenger.Activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import java.util.List;
@@ -28,7 +26,6 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private ContactsAdapter mAdapter;
-    private FloatingActionButton fab_add;
     private SwipeRefreshLayout swipeContainer;
     private List<UserPOJO> mUsers;
     private DatabaseHelper databaseHelper;
@@ -63,13 +60,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         mUsers = databaseHelper.getAllUsers();
         mAdapter = new ContactsAdapter(ContactsActivity.this, mUsers);
         mRecyclerView.setAdapter(mAdapter);
-        fab_add = findViewById(R.id.fab_new_contact);
-        fab_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showaddDialog();
-            }
-        });
+
 
 
     }
@@ -116,6 +107,10 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.addfriend_button:
+                showaddDialog();
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }

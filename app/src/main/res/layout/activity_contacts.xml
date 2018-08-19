@@ -8,7 +8,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
@@ -24,13 +24,4 @@
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_new_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add" />
 </RelativeLayout>

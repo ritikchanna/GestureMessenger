@@ -10,7 +10,8 @@
 
     <string name="facebook_application_id" translatable="false">944783255706999</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb944783255706999</string>
-
+    <string name="search">Search</string>
+    <string name="addFriend">Add Friend</string>
 
     <string name="contacts_activity_title">Choose Contact</string>
 </resources>

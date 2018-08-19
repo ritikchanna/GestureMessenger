@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.contacts_menu, menu);
+        getMenuInflater().inflate(R.menu.chats_menu, menu);
         return true;
     }
     @Override

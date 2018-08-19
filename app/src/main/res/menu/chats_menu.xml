@@ -3,17 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/addfriend_button"
-        android:icon="@drawable/ic_addfriend"
-        android:orderInCategory="0"
-        android:title="@string/addFriend"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/search_button"
         android:icon="@drawable/ic_search"
-        android:orderInCategory="1"
+        android:orderInCategory="0"
         android:title="@string/search"
         app:showAsAction="ifRoom" />
-
 
 </menu>
