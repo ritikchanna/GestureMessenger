@@ -4,25 +4,33 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 public class Logging {
+    private static Boolean debug = true;
 
 
-    public void logDebug(Class source, String Message) {
+    public static void logDebug(Class source, String Message) {
+        if (!debug)
         Log.d(source.getSimpleName(), Message);
     }
 
     public void logError(Class source, Exception e) {
-        Log.e(source.getSimpleName(), e.getMessage());
-        e.printStackTrace();
+        if (!debug) {
+            Log.e(source.getSimpleName(), e.getMessage());
+            e.printStackTrace();
+        } else
+            Crashlytics.log(e.getMessage());
     }
 
     public void logInfo(Class source, String Message) {
-        Log.i(source.getSimpleName(), Message);
-        Log.d(source.getSimpleName(), Message);
+        if (debug)
+            Log.i(source.getSimpleName(), Message);
     }
 
     public void toastDebug(Context context, String Message) {
-        Toast.makeText(context, Message, Toast.LENGTH_LONG).show();
+        if (debug)
+            Toast.makeText(context, Message, Toast.LENGTH_LONG).show();
     }
 
 
