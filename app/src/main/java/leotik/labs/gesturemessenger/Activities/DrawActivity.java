@@ -29,7 +29,6 @@ public class DrawActivity extends AppCompatActivity implements DownloadListner {
     private RelativeLayout headerView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

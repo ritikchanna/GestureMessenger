@@ -26,7 +26,6 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
     private static ChatsDatabaseHelper chatsDatabaseHelper;
 
 
-
     public ChatsAdapter(Context context) {
         chatsDatabaseHelper = new ChatsDatabaseHelper(context);
         users = chatsDatabaseHelper.getChatUsers();
@@ -64,6 +63,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         users = chatsDatabaseHelper.getChatUsers();
         notifyDataSetChanged();
     }
+
     @Override
     public int getItemCount() {
         return users.size();

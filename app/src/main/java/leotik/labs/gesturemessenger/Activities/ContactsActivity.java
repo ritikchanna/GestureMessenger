@@ -62,7 +62,6 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         mRecyclerView.setAdapter(mAdapter);
 
 
-
     }
 
     public void showaddDialog() {

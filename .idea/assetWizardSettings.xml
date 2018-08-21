@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_chat" />
-                            <entry key="sourceFile" value="$USER_HOME$/chat.svg" />
+                            <entry key="outputName" value="ic_addfriend" />
+                            <entry key="sourceFile" value="$USER_HOME$/addFriend.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.chats_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

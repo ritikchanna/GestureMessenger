@@ -92,7 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("Ritik", "getUser: " + phone);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_INFO_TABLE,
-                new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_TIMESTAMP,USER_INFO_COLUMN_STATUS},
+                new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_TIMESTAMP, USER_INFO_COLUMN_STATUS},
                 USER_INFO_COLUMN_PHONE + "=?",
                 new String[]{phone}, null, null, null, null);
 
@@ -190,8 +190,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else return "0";
 
     }
-
-
 
 
 }

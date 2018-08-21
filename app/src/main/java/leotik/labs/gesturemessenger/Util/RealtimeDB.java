@@ -244,14 +244,14 @@ public class RealtimeDB {
         String userPhone = mUser.getPhoneNo();
         Logging.logDebug(RealtimeDB.class, "Setting FCM Token for " + userPhone);
         if (userPhone != null)
-        firebaseFirestore.collection(mUser.getPhoneNo()).document("t").set(tokenvalue);
+            firebaseFirestore.collection(mUser.getPhoneNo()).document("t").set(tokenvalue);
     }
 
 
     public void sendMessage(String Receiver, String Gesture, final DownloadListner downloadListner) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
-        Log.d("Ritik", "sendMessage: "+Receiver);
+        Log.d("Ritik", "sendMessage: " + Receiver);
         String Sender = mUser.getPhoneNo();
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
@@ -265,19 +265,19 @@ public class RealtimeDB {
             }
         })
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("Ritik", "onsuccess: ");
-                downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Ritik", "onfailiure: ");
-                        downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Ritik", "onsuccess: ");
+                        downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
+
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Ritik", "onfailiure: ");
+                downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
+            }
+        });
         databaseReference.child("a").child(Receiver).child(System.currentTimeMillis() + Sender).setValue("u");
     }
 

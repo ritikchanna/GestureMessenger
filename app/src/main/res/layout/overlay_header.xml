@@ -41,7 +41,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
-        android:src="@drawable/ic_send"
         android:background="#0000"
+        android:src="@drawable/ic_send"
         android:visibility="gone" />
 </RelativeLayout>

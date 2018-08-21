@@ -240,7 +240,6 @@ public class PhoneAuthActivity extends AppCompatActivity implements View.OnClick
         }
 
 
-
     }
 
     private void launchMainActivity() {

@@ -22,7 +22,7 @@ public class FCMservice extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // super.onMessageReceived(remoteMessage);
 
-            startService(new Intent(getApplicationContext(), BackgroundService.class));
+        startService(new Intent(getApplicationContext(), BackgroundService.class));
 
 
         Map<String, String> data = remoteMessage.getData();
