@@ -12,10 +12,10 @@ public class Logging {
 
     public static void logDebug(Class source, String Message) {
         if (!debug)
-        Log.d(source.getSimpleName(), Message);
+            Log.d(source.getSimpleName(), Message);
     }
 
-    public void logError(Class source, Exception e) {
+    public static void logError(Class source, Exception e) {
         if (!debug) {
             Log.e(source.getSimpleName(), e.getMessage());
             e.printStackTrace();

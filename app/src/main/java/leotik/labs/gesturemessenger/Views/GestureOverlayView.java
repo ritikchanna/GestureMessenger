@@ -9,6 +9,8 @@ import android.graphics.Path;
 import android.util.Log;
 import android.view.View;
 
+import leotik.labs.gesturemessenger.Util.Logging;
+
 /**
  * Created by superuser on 4/6/18.
  */
@@ -143,6 +145,7 @@ public class GestureOverlayView extends View implements Runnable {
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
+                Logging.logError(GestureOverlayView.class, e);
 
             }
         }

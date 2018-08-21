@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Util.Constants;
+import leotik.labs.gesturemessenger.Util.Logging;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -26,6 +28,8 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Ritik", "onCreate: ");
+        Logging.logDebug(SplashScreen.class, "Created");
         setContentView(R.layout.activity_splash_screen);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(SplashScreen.this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -36,6 +40,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void login() {
+        Logging.logDebug(SplashScreen.class, "Logging in");
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in

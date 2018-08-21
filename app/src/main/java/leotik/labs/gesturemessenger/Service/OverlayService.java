@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +25,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Util.Logging;
 import leotik.labs.gesturemessenger.Views.GestureOverlayView;
 
 import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
@@ -93,6 +93,7 @@ public class OverlayService extends Service {
 
     @Override
     public void onDestroy() {
+        Logging.logDebug(OverlayService.class, "onDestroy");
         super.onDestroy();
         if (mChatHeadView != null) {
             mWindowManager.removeView(mChatHeadView);
@@ -103,6 +104,7 @@ public class OverlayService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //todo service closes on ram clear, showing notification can be possible fix, doesnt work on oreo
+
         startForeground(36, getNotification());
         String name = intent.getStringExtra("sender_name");
         ((TextView) HeaderView.findViewById(R.id.overlay_name)).setText(name);
@@ -113,22 +115,26 @@ public class OverlayService extends Service {
             ((SimpleDraweeView) HeaderView.findViewById(R.id.overlay_photo)).setImageURI(Uri.parse(url));
 
         mChatHeadView.startIt(100, intent.getStringExtra("gesture"));
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
     public Notification getNotification() {
         String channel;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channel = createChannel();
-        else {
+        } else {
+            // If earlier version channel ID is not used
+            // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
             channel = "";
         }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel).setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("snap map fake location");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1)
+            mBuilder.setChannelId(getString(R.string.gesture_notification_channel));
         Notification notification = mBuilder
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(PRIORITY_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
-
 
         return notification;
     }
@@ -138,18 +144,16 @@ public class OverlayService extends Service {
     private synchronized String createChannel() {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         //todo change these string
-        String name = "Notification Body";
         int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel(getString(R.string.gesture_notification_channel), getString(R.string.gesture_notification), importance);
 
-        NotificationChannel mChannel = new NotificationChannel("Channel name", name, importance);
-
-        mChannel.enableLights(true);
-        mChannel.setLightColor(Color.BLUE);
+        mChannel.enableLights(false);
+        // mChannel.setLightColor(Color.BLUE);
         if (mNotificationManager != null) {
             mNotificationManager.createNotificationChannel(mChannel);
         } else {
             stopSelf();
         }
-        return "Channel Name";
+        return mChannel.getName().toString();
     }
 }
