@@ -8,5 +8,6 @@ public class Constants {
     public static int REQUEST_OVERLAY_PERMISSION = 98;
     public static int REFRESH_CONTACTS = 97;
     public static int SEND_MESSAGE = 96;
+    public static int REQUEST_VERIFY_PHONE = 95;
 
 }

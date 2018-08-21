@@ -18,4 +18,8 @@
 
     <string name="gesture_notification">Displaying Gesture</string>
     <string name="gesture_notification_channel">Display Gesture Notification</string>
+
+    <string name="RegisterAs">Not <b>%1$s(%2$s)</b> ? \n<i><u>Click Here</u></i></string>
+    <string name="sms_terms_of_service">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="sendOTP">Send OTP</string>
 </resources>

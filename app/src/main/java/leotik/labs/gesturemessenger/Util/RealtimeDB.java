@@ -242,6 +242,7 @@ public class RealtimeDB {
         HashMap<String, Object> tokenvalue = new HashMap<>();
         tokenvalue.put("v", token);
         String userPhone = mUser.getPhoneNo();
+        Logging.logDebug(RealtimeDB.class, "Setting FCM Token for " + userPhone);
         if (userPhone != null)
         firebaseFirestore.collection(mUser.getPhoneNo()).document("t").set(tokenvalue);
     }

@@ -1,17 +1,22 @@
 package leotik.labs.gesturemessenger.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -24,17 +29,37 @@ import leotik.labs.gesturemessenger.Util.Logging;
 public class SplashScreen extends AppCompatActivity {
 
 
+    public static boolean canDrawOverlays(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            return Settings.canDrawOverlays(context);
+        } else {
+            if (Settings.canDrawOverlays(context)) return true;
+            try {
+                WindowManager mgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                if (mgr == null) return false; //getSystemService might return null
+                View viewToAdd = new View(context);
+                WindowManager.LayoutParams params = new WindowManager.LayoutParams(0, 0, android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSPARENT);
+                viewToAdd.setLayoutParams(params);
+                mgr.addView(viewToAdd, params);
+                mgr.removeView(viewToAdd);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Ritik", "onCreate: ");
         Logging.logDebug(SplashScreen.class, "Created");
         setContentView(R.layout.activity_splash_screen);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(SplashScreen.this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, Constants.REQUEST_OVERLAY_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermission();
         } else
             login();
     }
@@ -43,9 +68,11 @@ public class SplashScreen extends AppCompatActivity {
         Logging.logDebug(SplashScreen.class, "Logging in");
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            // already signed in
+
             startActivity(new Intent(SplashScreen.this, PhoneAuthActivity.class));
             finish();
+
+
         } else {
             // not signed in
             startActivityForResult(
@@ -60,12 +87,24 @@ public class SplashScreen extends AppCompatActivity {
 //                                    new AuthUI.IdpConfig.TwitterBuilder().build(),
 //                                    new AuthUI.IdpConfig.GitHubBuilder().build(),
                                     new AuthUI.IdpConfig.EmailBuilder().build()
-                                    //new AuthUI.IdpConfig.PhoneBuilder().build()
+//                                    new AuthUI.IdpConfig.PhoneBuilder().build()
                             ))
                             .build(),
                     Constants.REQUEST_SIGN_IN);
         }
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission() {
+        if (canDrawOverlays(SplashScreen.this)) {
+            login();
+
+        } else {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, Constants.REQUEST_OVERLAY_PERMISSION);
+        }
     }
 
     @Override
@@ -77,7 +116,6 @@ public class SplashScreen extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 login();
             } else {
-                //todo show a dialog, try again or maybe switch to legacy mode (Without Overlay)
                 Toast.makeText(this,
                         "Draw over other app permission not available. Closing the application",
                         Toast.LENGTH_SHORT).show();
@@ -86,7 +124,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         } else if (requestCode == Constants.REQUEST_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
             // Successfully signed in
             if (resultCode == RESULT_OK) {
                 //startActivity(SignedInActivity.createIntent(this, response));
@@ -98,10 +135,13 @@ public class SplashScreen extends AppCompatActivity {
                     Snackbar.make(findViewById(R.id.splash_container), getString(R.string.sign_in_cancelled), Snackbar.LENGTH_SHORT);
                     return;
                 }
+                FirebaseUiException exception = response.getError();
+                if (exception != null) {
+                    if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                        Snackbar.make(findViewById(R.id.splash_container), getString(R.string.no_internet), Snackbar.LENGTH_SHORT);
+                        return;
+                    }
 
-                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Snackbar.make(findViewById(R.id.splash_container), getString(R.string.no_internet), Snackbar.LENGTH_SHORT);
-                    return;
                 }
 
                 Snackbar.make(findViewById(R.id.splash_container), getString(R.string.unknown_error), Snackbar.LENGTH_SHORT);
