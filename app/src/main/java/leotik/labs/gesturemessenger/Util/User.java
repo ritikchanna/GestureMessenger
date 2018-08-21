@@ -47,7 +47,11 @@ public class User {
     public String getPhoneNo() {
         if (firebaseUser == null)
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getPhoneNumber();
+        try {
+            return firebaseUser.getPhoneNumber();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getPhoto() {

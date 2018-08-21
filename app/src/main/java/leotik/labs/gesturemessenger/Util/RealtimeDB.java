@@ -231,10 +231,7 @@ public class RealtimeDB {
     }
 
     public void updatetokenonServer(String token) {
-        //todo return if succesful by adding listners
-        //databaseReference.child("t").child(Email.replace('.','*')).setValue(token);
         if (mUser.getFirebaseUser() == null) {
-            Log.d("Ritik", "updatetokenonServer: FIrebaseuser null");
             User.getInstance().destroy();
             mUser = User.getInstance();
         }
@@ -244,7 +241,8 @@ public class RealtimeDB {
         }
         HashMap<String, Object> tokenvalue = new HashMap<>();
         tokenvalue.put("v", token);
-
+        String userPhone = mUser.getPhoneNo();
+        if (userPhone != null)
         firebaseFirestore.collection(mUser.getPhoneNo()).document("t").set(tokenvalue);
     }
 
