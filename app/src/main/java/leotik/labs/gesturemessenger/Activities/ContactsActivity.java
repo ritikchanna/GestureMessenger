@@ -19,6 +19,7 @@ import leotik.labs.gesturemessenger.Adapters.ContactsAdapter;
 import leotik.labs.gesturemessenger.Interface.DownloadListner;
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
 import leotik.labs.gesturemessenger.R;
+import leotik.labs.gesturemessenger.Util.Constants;
 import leotik.labs.gesturemessenger.Util.DatabaseHelper;
 import leotik.labs.gesturemessenger.Util.RealtimeDB;
 
@@ -43,7 +44,8 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                RealtimeDB.getInstance(ContactsActivity.this).UpdateContacts(ContactsActivity.this);
+                swipeContainer.setRefreshing(true);
+                RealtimeDB.getInstance(ContactsActivity.this).getFriends(ContactsActivity.this, Constants.REFRESH_CONTACTS);
                 //  RealtimeDB.getInstance(ContactsActivity.this).attachFriendListListner(ContactsActivity.this);
             }
         });
@@ -68,13 +70,13 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         final EditText taskEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Add a new Contact")
-                .setMessage("Please Email of the user")
+                .setMessage("Please enter phone number of the user")
                 .setView(taskEditText)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String email = String.valueOf(taskEditText.getText());
-                        RealtimeDB.getInstance(ContactsActivity.this).addFriend(email, ContactsActivity.this);
+                        String phone = String.valueOf(taskEditText.getText());
+                        RealtimeDB.getInstance(ContactsActivity.this).addFriend(phone, ContactsActivity.this, Constants.ADD_FRIEND);
                         dialog.dismiss();
                         swipeContainer.setRefreshing(true);
                     }
@@ -87,10 +89,15 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
 
     @Override
     public void OnDownloadResult(int ResponseCode, Object Response) {
-        mUsers.clear();
-        mUsers.addAll(databaseHelper.getAllUsers());
-        mAdapter.notifyDataSetChanged();
-        swipeContainer.setRefreshing(false);
+        if (ResponseCode == Constants.REFRESH_CONTACTS) {
+            mUsers.clear();
+            mUsers.addAll(databaseHelper.getAllUsers());
+            mAdapter.notifyDataSetChanged();
+            swipeContainer.setRefreshing(false);
+        } else if (ResponseCode == Constants.ADD_FRIEND) {
+            //do something on friend add
+            //swipeContainer.setRefreshing(false);
+        }
 
     }
 

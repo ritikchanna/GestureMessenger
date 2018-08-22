@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,9 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,7 +26,6 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -70,40 +68,49 @@ public class RealtimeDB {
         return mrealtimeDB;
     }
 
-    public void getFriends(final DownloadListner downloadListner) {
+    public void getFriends(final DownloadListner downloadListner, final int ResponseCode) {
         final List<UserPOJO> friends = new ArrayList<>();
-        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        firebaseFirestore.collection(mUser.getPhoneNo()).document("f").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                Query query = firebaseFirestore.collection("u");
-                for (Map.Entry<String, Object> entry : documentSnapshot.getData().entrySet()) {
-
-                    query = query.whereEqualTo("e", entry.getKey());
+                if (documentSnapshot.getData().size() < 1) {
+                    downloadListner.OnDownloadResult(ResponseCode, null);
+                    return;
                 }
+                final Map<String, Object> Friendlist = documentSnapshot.getData();
 
+                for (final Map.Entry<String, Object> entry : Friendlist.entrySet()) {
+                    final String Phone = entry.getKey();
+                    final String Status = entry.getValue().toString();
 
-                query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        Log.d("Ritik", "querysuccess: " + queryDocumentSnapshots.getQuery().toString());
-                        Iterator friendsIterator = queryDocumentSnapshots.getDocuments().iterator();
-                        while (friendsIterator.hasNext()) {
-                            DocumentSnapshot snapshot = (DocumentSnapshot) friendsIterator.next();
-                            Log.d("Ritik", "adding: " + snapshot.getData().toString());
+                    Log.d("Ritik", "working: " + Phone);
+                    Log.d("Ritik", "Friend Status: " + Status);
+                    databaseHelper.deleteAll();
+                    final Task<DocumentSnapshot> documentSnapshotTask = firebaseFirestore.collection(Phone).document("i").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserPOJO userPOJO = new UserPOJO();
-                            userPOJO.setE(snapshot.getId());
-                            userPOJO.setN(snapshot.get("n") + "");
-                            userPOJO.setU(snapshot.get("u") + "");
-                            userPOJO.setP(snapshot.get("p") + "");
-                            userPOJO.setS(documentSnapshot.get(snapshot.getId()) + "");
-                            friends.add(userPOJO);
-                            Log.d("Ritik", "added: " + userPOJO.getE());
-
+                            if (documentSnapshot.getData() != null) {
+                                userPOJO.setP(Phone);
+                                userPOJO.setE(documentSnapshot.get("e") + "");
+                                userPOJO.setN(documentSnapshot.get("n") + "");
+                                userPOJO.setU(documentSnapshot.get("u") + "");
+                                userPOJO.setS(Status);
+                            } else {
+                                Crashlytics.log("Blank user " + Phone + "  for " + mUser.getPhoneNo());
+                                userPOJO.setN(Phone);
+                                userPOJO.setP(Phone);
+                                userPOJO.setS(Status);
+                            }
+                            Log.d("Ritik", "onSuccess: added " + userPOJO.getE() + userPOJO.getU() + userPOJO.getN() + userPOJO.getP());
+                            databaseHelper.insertUser(userPOJO, null);
+                            if (databaseHelper.getUsersCount() == Friendlist.size())
+                                downloadListner.OnDownloadResult(ResponseCode, null);
                         }
+                    });
 
-                        downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, friends);
-                    }
-                });
+
+                }
 
             }
         });
@@ -158,37 +165,50 @@ public class RealtimeDB {
         user.put("e", Email);
         firebaseFirestore.collection(Phoneno).document("i")
                 .set(user);
+        Crashlytics.setUserIdentifier(Phoneno);
     }
 
-    public void addFriend(String EmailofFriend, DownloadListner downloadListner) {
-        Map<String, Object> newFriend = new HashMap<>();
-        newFriend.put(sanitizeEmail(EmailofFriend), "s");
-        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).set(newFriend, SetOptions.merge());
-        downloadListner.OnDownloadResult(Constants.REFRESH_CONTACTS, "");
-    }
-
-    public void attachFriendListListner(final DownloadListner downloadListner) {
-        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+    public void addFriend(final String Phone, final DownloadListner downloadListner, final int RequestCode) {
+        final Map<String, Object> request = new HashMap<>();
+        request.put(mUser.getPhoneNo(), "r");
+        firebaseFirestore.collection(Phone).document("f").set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("Ritik", "Listen failed.", e);
-                    return;
-                }
+            public void onSuccess(Void aVoid) {
+                final Map<String, Object> sent = new HashMap<>();
+                sent.put(Phone, "s");
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        downloadListner.OnDownloadResult(RequestCode, Phone);
+                    }
+                });
 
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    Log.d("Ritik", "Current data: " + documentSnapshot.getData());
-
-                    Map<String, Object> newUsers = documentSnapshot.getData();
-                    newUsers.keySet().removeAll(databaseHelper.getallEmails());
-                    updateFriendList(newUsers, downloadListner);
-                    Log.d("Ritik", "Added Friends: " + newUsers);
-                } else {
-                    Log.d("Ritik", "Current data: null");
-                }
             }
         });
     }
+
+//    public void attachFriendListListner(final DownloadListner downloadListner) {
+//        firebaseFirestore.collection("f").document(sanitizeEmail(mUser.getEmail())).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+//                if (e != null) {
+//                    Log.w("Ritik", "Listen failed.", e);
+//                    return;
+//                }
+//
+//                if (documentSnapshot != null && documentSnapshot.exists()) {
+//                    Log.d("Ritik", "Current data: " + documentSnapshot.getData());
+//
+//                    Map<String, Object> newUsers = documentSnapshot.getData();
+//                    newUsers.keySet().removeAll(databaseHelper.getallEmails());
+//                    updateFriendList(newUsers, downloadListner);
+//                    Log.d("Ritik", "Added Friends: " + newUsers);
+//                } else {
+//                    Log.d("Ritik", "Current data: null");
+//                }
+//            }
+//        });
+//    }
 
     public void updateFriendList(Map<String, Object> userstoadd, final DownloadListner downloadListner) {
 
@@ -223,12 +243,12 @@ public class RealtimeDB {
 
     }
 
-    public void updateUser(String Email) {
-        Map<String, Object> user = firebaseFirestore.collection("u").document(sanitizeEmail(Email)).get().getResult().getData();
-        //todo update null values
-        databaseHelper.insertUser(Email, user.get("n").toString(), user.get("u").toString(), user.get("p").toString(), null, null);
-
-    }
+//    public void updateUser(String Email) {
+//        Map<String, Object> user = firebaseFirestore.collection("u").document(sanitizeEmail(Email)).get().getResult().getData();
+//        //todo update null values
+//        databaseHelper.insertUser(Email, user.get("n").toString(), user.get("u").toString(), user.get("p").toString(), null, null);
+//
+//    }
 
     public void updatetokenonServer(String token) {
         if (mUser.getFirebaseUser() == null) {
@@ -337,9 +357,6 @@ public class RealtimeDB {
     }
 
 
-    public String sanitizeEmail(String Email) {
-        return Email.replace('.', '_');
-    }
 
 
 //    public void setValueEventListner(String Receiver) {

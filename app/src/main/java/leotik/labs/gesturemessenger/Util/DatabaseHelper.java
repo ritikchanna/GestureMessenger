@@ -140,12 +140,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return users;
     }
 
-    public List<String> getallEmails() {
+    public List<String> getallPhone() {
 
         List<String> users = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT  " + USER_INFO_COLUMN_EMAIL + " FROM " + USER_INFO_TABLE + " ORDER BY " +
+        String selectQuery = "SELECT  " + USER_INFO_COLUMN_PHONE + " FROM " + USER_INFO_TABLE + " ORDER BY " +
                 USER_INFO_COLUMN_NAME + " ASC ";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -156,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
 
 
-                users.add(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)));
+                users.add(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)));
             } while (cursor.moveToNext());
         }
 
@@ -176,6 +176,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         // return count
         return count;
+    }
+
+    public void deleteAll() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(USER_INFO_TABLE, null, null);
     }
 
     public String getlastUserupdate() {

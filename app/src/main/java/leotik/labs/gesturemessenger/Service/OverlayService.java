@@ -134,7 +134,7 @@ public class OverlayService extends Service {
             channel = "";
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             mBuilder.setChannelId(getString(R.string.gesture_notification_channel));
         Notification notification = mBuilder
                 .setSmallIcon(R.mipmap.ic_launcher)
