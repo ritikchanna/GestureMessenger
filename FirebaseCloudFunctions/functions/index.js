@@ -65,9 +65,9 @@ exports.sendMessageNotification =
 
 
 exports.sendFriendNotification =
-  functions.firestore.document('{user}/f/{status}/{user2}')
+  functions.firestore.document('{user}/f/f/{user2}')
     .onWrite((change, context) => {
-      debugLogger('sendFriendNotification v03');
+      debugLogger('sendFriendNotification v04');
       const user = context.params.user;
       debugLogger(`Primary User Id: ${user}`);
       const status = context.params.status;
@@ -75,13 +75,16 @@ exports.sendFriendNotification =
       const user2 = context.params.user2;
       debugLogger(`Secondary Used Id: ${user2}`);
       const newValue = change.after.exists ? change.after.data() : null;
+      const oldValue = change.before.exists ? change.before.data() : null;
      // const newValue = change.after.data();
-      var updatetime = 0;
+        var newStatus = '0';
+        var oldStatus = '0';
       if(newValue !== null)
-            updatetime = newValue.t;
-       else
-            updatetime = '-1';
-    debugLogger(`Update time value: ${updatetime}`);
+            newStatus = newValue.s;
+      if(oldValue !== null)
+            oldStatus = oldValue.s;
+       
+    
 
 
       const payload = {
@@ -89,8 +92,8 @@ exports.sendFriendNotification =
           type: `friend`,
           user: `${user}`,
           user2: `${user2}`,
-          status: `${status}`,
-          time: `${updatetime}`
+          newStatus: `${newStatus}`,
+          oldStatus: `${oldStatus}`
         }
       };
       debugLogger('Payload Created');
