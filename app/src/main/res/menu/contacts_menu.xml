@@ -5,9 +5,9 @@
     <item
         android:id="@+id/friendRequest_button"
         android:icon="@drawable/ic_friend"
-        app:actionLayout="@layout/button_friend_request"
         android:orderInCategory="0"
         android:title="@string/addFriend"
+        app:actionLayout="@layout/button_friend_request"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/search_button"

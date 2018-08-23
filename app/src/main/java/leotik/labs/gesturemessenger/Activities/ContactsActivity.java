@@ -176,6 +176,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
             }
         }
     }
+
     @Override
     public void OnErrorDownloadResult(int ResponseCode) {
         swipeContainer.setRefreshing(false);

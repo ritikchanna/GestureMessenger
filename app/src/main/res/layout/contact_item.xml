@@ -19,9 +19,9 @@
 
 
     <LinearLayout
+        android:id="@+id/end_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/end_view"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal">
 

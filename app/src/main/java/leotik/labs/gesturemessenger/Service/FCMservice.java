@@ -20,6 +20,7 @@ import leotik.labs.gesturemessenger.Util.RealtimeDB;
 public class FCMservice extends FirebaseMessagingService implements DownloadListner {
     private DatabaseHelper databaseHelper;
     private NotificationUtils notificationUtils;
+
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
@@ -83,7 +84,6 @@ public class FCMservice extends FirebaseMessagingService implements DownloadList
                         notificationUtils.setContentText(getString(R.string.notification_friend_request_accept, name));
                         notificationUtils.show();
                     }
-
 
 
                     break;

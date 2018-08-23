@@ -418,8 +418,6 @@ public class RealtimeDB {
     }
 
 
-
-
 //    public void setValueEventListner(String Receiver) {
 //        databaseReference.child("a").child(Receiver.replace('.', '*')).addChildEventListener(new ChildEventListener() {
 //            @Override
