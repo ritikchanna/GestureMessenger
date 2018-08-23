@@ -29,7 +29,6 @@ import leotik.labs.gesturemessenger.Util.Logging;
 import leotik.labs.gesturemessenger.Views.GestureOverlayView;
 
 import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
-import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 public class OverlayService extends Service {
     private WindowManager mWindowManager;
@@ -66,14 +65,14 @@ public class OverlayService extends Service {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 //WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 PixelFormat.TRANSLUCENT);
         final WindowManager.LayoutParams params1 = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 //WindowManager.LayoutParams.TYPE_PHONE,
                 LAYOUT_FLAG,
-                FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
 
