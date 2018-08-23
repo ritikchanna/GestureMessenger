@@ -68,20 +68,45 @@ public class RealtimeDB {
         return mrealtimeDB;
     }
 
+    public void getUser(final DownloadListner downloadListner, final int ResposeCode, final String Phone, @Nullable final String Status) {
+        final UserPOJO userPOJO = new UserPOJO();
+        firebaseFirestore.collection(Phone).document("i").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userPOJO.setP(Phone);
+                userPOJO.setU(documentSnapshot.get("u") + "");
+                userPOJO.setN(documentSnapshot.get("n") + "");
+                userPOJO.setE(documentSnapshot.get("e") + "");
+                if (Status != null)
+                    userPOJO.setS(Status);
+                downloadListner.OnDownloadResult(ResposeCode, userPOJO);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                downloadListner.OnErrorDownloadResult(ResposeCode);
+            }
+        });
+    }
+
+
     public void getFriends(final DownloadListner downloadListner, final int ResponseCode) {
         final List<UserPOJO> friends = new ArrayList<>();
-        firebaseFirestore.collection(mUser.getPhoneNo()).document("f").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(final DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.getData().size() < 1) {
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                if (queryDocumentSnapshots.getDocuments().size() < 1) {
                     downloadListner.OnDownloadResult(ResponseCode, null);
                     return;
                 }
-                final Map<String, Object> Friendlist = documentSnapshot.getData();
 
-                for (final Map.Entry<String, Object> entry : Friendlist.entrySet()) {
-                    final String Phone = entry.getKey();
-                    final String Status = entry.getValue().toString();
+                final List<DocumentSnapshot> Friendlist = queryDocumentSnapshots.getDocuments();
+
+
+                for (final DocumentSnapshot entry : Friendlist) {
+                    final String Phone = entry.getId();
+                    final String Status = entry.get("s") + "";
 
                     Log.d("Ritik", "working: " + Phone);
                     Log.d("Ritik", "Friend Status: " + Status);

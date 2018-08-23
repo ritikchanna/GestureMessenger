@@ -17,7 +17,14 @@
 
 
     <string name="gesture_notification">Displaying Gesture</string>
-    <string name="gesture_notification_channel">Display Gesture Notification</string>
+    <string name="gesture_notification_channel">Displaying Gesture Notification</string>
+    <string name="friend_notification_channel_id">FNC</string>
+    <string name="friend_notification_channel">Friend List Notifications</string>
+    <string name="friend_notification_channel_description">Get notifications when a friend adds you or accepts your request</string>
+    <string name="notification_title_new_request">New Friend Request</string>
+    <string name="notification_new_request">"%1$s" has requested to add you as friend</string>
+    <string name="notification_title_friend_request_accept">Friend Request Accepted</string>
+    <string name="notification_friend_request_accept">"%1$s" has accepted your friend request</string>
 
     <string name="RegisterAs">Not <b>%1$s(%2$s)</b> ? \n<i><u>Click Here</u></i></string>
     <string name="sms_terms_of_service">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>

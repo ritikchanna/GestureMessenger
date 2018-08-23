@@ -196,6 +196,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public boolean deleteUser(String phone) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.delete(USER_INFO_TABLE, USER_INFO_COLUMN_PHONE + "=" + phone, null) > 0;
+    }
+
+
 
 }
 
