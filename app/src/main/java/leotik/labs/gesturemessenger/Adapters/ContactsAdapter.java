@@ -47,7 +47,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.profileName.setText(mUsers.get(position).getN() + "  " + mUsers.get(position).getS());
+        holder.profileName.setText(mUsers.get(position).getN());
         Log.d("Ritik", "onBindViewHolder: " + mUsers.get(position).getE() + "   " + mUsers.get(position).getU());
         if (mUsers.get(position).getU() == null || mUsers.get(position).getU().equals("") || mUsers.get(position).getU().equals("null"))
             holder.profilePhoto.setImageURI(Uri.parse("http://flathash.com/" + mUsers.get(position).getE() + ".png"));

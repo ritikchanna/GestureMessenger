@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/addfriend_button"
-        android:icon="@drawable/ic_addfriend"
+        android:id="@+id/friendRequest_button"
+        android:icon="@drawable/ic_friend"
+        app:actionLayout="@layout/button_friend_request"
         android:orderInCategory="0"
         android:title="@string/addFriend"
         app:showAsAction="ifRoom" />

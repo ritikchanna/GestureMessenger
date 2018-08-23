@@ -14,6 +14,8 @@
     <string name="addFriend">Add Friend</string>
 
     <string name="contacts_activity_title">Choose Contact</string>
+    <string name="friend_request_title">Friend Requests</string>
+    <string name="view_sent_requests">Sent Requests</string>
 
 
     <string name="gesture_notification">Displaying Gesture</string>

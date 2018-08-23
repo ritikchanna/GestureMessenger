@@ -110,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_STATUS)));
     }
 
-    public List<UserPOJO> getAllUsers() {
+    public List<UserPOJO> getAllUsers_old() {
         List<UserPOJO> users = new ArrayList<>();
 
         // Select All Query
@@ -139,6 +139,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // return notes list
         return users;
     }
+
+    public List<UserPOJO> getAllUsers(@Nullable String Status) {
+        List<UserPOJO> users = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(USER_INFO_TABLE,
+                new String[]{USER_INFO_COLUMN_EMAIL, USER_INFO_COLUMN_NAME, USER_INFO_COLUMN_PHOTO_URL, USER_INFO_COLUMN_PHONE, USER_INFO_COLUMN_STATUS},
+                USER_INFO_COLUMN_STATUS + "=?",
+                new String[]{Status}, null, null, USER_INFO_COLUMN_NAME + " ASC ", null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                UserPOJO user = new UserPOJO(cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_EMAIL)),
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_NAME)),
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHOTO_URL)),
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_PHONE)),
+                        cursor.getString(cursor.getColumnIndex(USER_INFO_COLUMN_STATUS)));
+
+                users.add(user);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return notes list
+        return users;
+    }
+
 
     public List<String> getallPhone() {
 
