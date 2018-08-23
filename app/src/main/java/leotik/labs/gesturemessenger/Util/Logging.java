@@ -11,24 +11,24 @@ public class Logging {
 
 
     public static void logDebug(Class source, String Message) {
-        if (!debug)
+        if (debug)
             Log.d(source.getSimpleName(), Message);
     }
 
     public static void logError(Class source, Exception e) {
-        if (!debug) {
+        if (debug) {
             Log.e(source.getSimpleName(), e.getMessage());
             e.printStackTrace();
         } else
-            Crashlytics.log(e.getMessage());
+            Crashlytics.logException(e);
     }
 
-    public void logInfo(Class source, String Message) {
+    public static void logInfo(Class source, String Message) {
         if (debug)
             Log.i(source.getSimpleName(), Message);
     }
 
-    public void toastDebug(Context context, String Message) {
+    public static void toastDebug(Context context, String Message) {
         if (debug)
             Toast.makeText(context, Message, Toast.LENGTH_LONG).show();
     }
