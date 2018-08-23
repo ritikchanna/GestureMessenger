@@ -225,9 +225,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean deleteUser(String phone) {
+    public void deleteUser(String phone) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.delete(USER_INFO_TABLE, USER_INFO_COLUMN_PHONE + "=" + phone, null) > 0;
+        ContentValues cv = new ContentValues();
+        UserPOJO user = getUser(phone);
+        cv.put(USER_INFO_COLUMN_NAME, user.getN());
+        cv.put(USER_INFO_COLUMN_PHOTO_URL, user.getU());
+        cv.put(USER_INFO_COLUMN_PHONE, user.getP());
+        cv.put(USER_INFO_COLUMN_EMAIL, user.getE());
+        cv.put(USER_INFO_COLUMN_STATUS, "x"); //These Fields should be your String values of actual column names
+        db.update(USER_INFO_TABLE, cv, USER_INFO_COLUMN_PHONE + " =? ", new String[]{phone});
     }
 
 

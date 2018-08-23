@@ -71,7 +71,7 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
         mRecyclerView.setLayoutManager(mLayoutManager);
         databaseHelper = new DatabaseHelper(ContactsActivity.this);
         mUsers = databaseHelper.getAllUsers("f");
-        mAdapter = new ContactsAdapter(ContactsActivity.this, mUsers);
+        mAdapter = new ContactsAdapter(ContactsActivity.this, mUsers, this);
         mRecyclerView.setAdapter(mAdapter);
         sentRequests = findViewById(R.id.sent_requests);
         sentRequests.setOnClickListener(new View.OnClickListener() {
@@ -115,11 +115,11 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
     @Override
     public void OnDownloadResult(int ResponseCode, Object Response) {
         if (ResponseCode == Constants.REFRESH_CONTACTS) {
-            loadlist(0);
+            loadlist(currentlist);
             swipeContainer.setRefreshing(false);
         } else if (ResponseCode == Constants.ADD_FRIEND) {
             //do something on friend add
-            //swipeContainer.setRefreshing(false);
+            swipeContainer.setRefreshing(false);
         }
 
     }

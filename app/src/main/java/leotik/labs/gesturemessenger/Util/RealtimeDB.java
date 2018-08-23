@@ -195,16 +195,52 @@ public class RealtimeDB {
 
     public void addFriend(final String Phone, final DownloadListner downloadListner, final int RequestCode) {
         final Map<String, Object> request = new HashMap<>();
-        request.put(mUser.getPhoneNo(), "r");
-        firebaseFirestore.collection(Phone).document("f").set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+        request.put("s", "r");
+        firebaseFirestore.collection(Phone).document("f").collection("f").document(mUser.getPhoneNo()).set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 final Map<String, Object> sent = new HashMap<>();
-                sent.put(Phone, "s");
-                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                sent.put("s", "s");
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(Phone).set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         downloadListner.OnDownloadResult(RequestCode, Phone);
+                    }
+                });
+
+            }
+        });
+    }
+
+    public void acceptFriend(final String Phone, @Nullable final DownloadListner downloadListner, final int RequestCode) {
+        final Map<String, Object> request = new HashMap<>();
+        request.put("s", "f");
+        firebaseFirestore.collection(Phone).document("f").collection("f").document(mUser.getPhoneNo()).set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                final Map<String, Object> sent = new HashMap<>();
+                sent.put("s", "f");
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(Phone).set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (downloadListner != null)
+                            downloadListner.OnDownloadResult(RequestCode, Phone);
+                    }
+                });
+
+            }
+        });
+    }
+
+    public void deleteFriend(final String Phone, @Nullable final DownloadListner downloadListner, final int RequestCode) {
+        firebaseFirestore.collection(Phone).document("f").collection("f").document(mUser.getPhoneNo()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(Phone).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (downloadListner != null)
+                            downloadListner.OnDownloadResult(RequestCode, Phone);
                     }
                 });
 

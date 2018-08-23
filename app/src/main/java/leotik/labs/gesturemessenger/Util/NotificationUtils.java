@@ -68,7 +68,7 @@ public class NotificationUtils {
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mcontext, CHANNEL_ID);
         if (enableVibration)
-            builder.setVibrate(new long[]{1000, 1000});
+            builder.setVibrate(new long[]{100, 200});
         if (enableSound)
             builder.setSound(SOUND);
         if (enableLight)
