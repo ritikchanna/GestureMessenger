@@ -24,7 +24,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class RealtimeDB {
 
 
     public void getFriends(final DownloadListner downloadListner, final int ResponseCode) {
-        final List<UserPOJO> friends = new ArrayList<>();
+        Logging.logDebug(RealtimeDB.class, "getFriends()");
         firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

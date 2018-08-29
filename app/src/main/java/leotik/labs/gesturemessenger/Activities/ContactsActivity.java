@@ -87,7 +87,11 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
                 showaddDialog();
             }
         });
+        if (mUsers.size() == 0) {
+            swipeContainer.setRefreshing(true);
+            RealtimeDB.getInstance(ContactsActivity.this).getFriends(ContactsActivity.this, Constants.REFRESH_CONTACTS);
 
+        }
 
     }
 
