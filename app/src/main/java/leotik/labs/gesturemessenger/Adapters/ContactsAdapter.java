@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
+import leotik.labs.gesturemessenger.Activities.ContactsActivity;
 import leotik.labs.gesturemessenger.Activities.DrawActivity;
 import leotik.labs.gesturemessenger.Interface.DownloadListner;
 import leotik.labs.gesturemessenger.POJO.UserPOJO;
@@ -22,12 +23,11 @@ import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Util.Constants;
 import leotik.labs.gesturemessenger.Util.RealtimeDB;
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder> {
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder> implements DownloadListner {
     private static List<UserPOJO> mUsers;
     private static Context mcontext;
     private static Intent launchDrawActivity;
     private static RealtimeDB realtimeDB;
-    private static DownloadListner mdownloadListner;
 
 
     public ContactsAdapter(Context context, List<UserPOJO> Users, DownloadListner downloadListner) {
@@ -35,8 +35,24 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         mUsers = Users;
         launchDrawActivity = new Intent(context, DrawActivity.class);
         mcontext = context;
-        mdownloadListner = downloadListner;
 
+
+    }
+
+    @Override
+    public void OnDownloadResult(int ResponseCode, Object Response) {
+        if (ResponseCode == Constants.FRIEND_REQUEST_RESPONSE) {
+            mUsers.remove(Response);
+            notifyDataSetChanged();
+
+        }
+    }
+
+    @Override
+    public void OnErrorDownloadResult(int ResponseCode) {
+        if (ResponseCode == Constants.FRIEND_REQUEST_RESPONSE) {
+            ((ContactsActivity) mcontext).loadCurrentlist();
+        }
     }
 
     @Override
@@ -104,14 +120,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         public void onClick(View view) {
             if (!(mUsers.get(getAdapterPosition()).getS().equals("f"))) {
                 if (view.getId() == R.id.accept_request) {
-                    realtimeDB.acceptFriend(mUsers.get(getAdapterPosition()).getP(), mdownloadListner, Constants.REFRESH_CONTACTS);
-                    mUsers.remove(getAdapterPosition());
-                    notifyDataSetChanged();
+                    realtimeDB.acceptFriend(mUsers.get(getAdapterPosition()), ContactsAdapter.this, Constants.FRIEND_REQUEST_RESPONSE);
+                    view.setVisibility(View.GONE);
                 } else if (view.getId() == R.id.discard_request) {
-                    realtimeDB.deleteFriend(mUsers.get(getAdapterPosition()).getP(), mdownloadListner, Constants.REFRESH_CONTACTS);
-                    mUsers.remove(getAdapterPosition());
-                    notifyDataSetChanged();
-
+                    realtimeDB.deleteFriend(mUsers.get(getAdapterPosition()), ContactsAdapter.this, Constants.FRIEND_REQUEST_RESPONSE);
+                    view.setVisibility(View.GONE);
                 }
             } else {
                 launchDrawActivity.putExtra("phone", mUsers.get(getAdapterPosition()).getP());
@@ -122,6 +135,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             }
 
         }
+
 
     }
 

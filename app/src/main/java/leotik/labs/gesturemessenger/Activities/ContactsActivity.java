@@ -190,6 +190,11 @@ public class ContactsActivity extends AppCompatActivity implements DownloadListn
             super.onBackPressed();
     }
 
+    public int loadCurrentlist() {
+        loadlist(currentlist);
+        return currentlist;
+    }
+
     public void loadlist(int list) {
         Logging.logDebug(ContactsActivity.class, "Load List " + list);
         mUsers.clear();

@@ -212,19 +212,27 @@ public class RealtimeDB {
         });
     }
 
-    public void acceptFriend(final String Phone, @Nullable final DownloadListner downloadListner, final int RequestCode) {
+    public void acceptFriend(final UserPOJO user, @Nullable final DownloadListner downloadListner, final int RequestCode) {
         final Map<String, Object> request = new HashMap<>();
         request.put("s", "f");
-        firebaseFirestore.collection(Phone).document("f").collection("f").document(mUser.getPhoneNo()).set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firebaseFirestore.collection(user.getP()).document("f").collection("f").document(mUser.getPhoneNo()).set(request, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 final Map<String, Object> sent = new HashMap<>();
                 sent.put("s", "f");
-                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(Phone).set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(user.getP()).set(sent, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         if (downloadListner != null)
-                            downloadListner.OnDownloadResult(RequestCode, Phone);
+                            downloadListner.OnDownloadResult(RequestCode, user);
+                        user.setS("f");
+                        databaseHelper.updateUser(user);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (downloadListner != null)
+                            downloadListner.OnErrorDownloadResult(RequestCode);
                     }
                 });
 
@@ -232,15 +240,22 @@ public class RealtimeDB {
         });
     }
 
-    public void deleteFriend(final String Phone, @Nullable final DownloadListner downloadListner, final int RequestCode) {
-        firebaseFirestore.collection(Phone).document("f").collection("f").document(mUser.getPhoneNo()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void deleteFriend(final UserPOJO user, @Nullable final DownloadListner downloadListner, final int RequestCode) {
+        firebaseFirestore.collection(user.getP()).document("f").collection("f").document(mUser.getPhoneNo()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(Phone).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                firebaseFirestore.collection(mUser.getPhoneNo()).document("f").collection("f").document(user.getP()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         if (downloadListner != null)
-                            downloadListner.OnDownloadResult(RequestCode, Phone);
+                            downloadListner.OnDownloadResult(RequestCode, user);
+                        databaseHelper.deleteUser(user.getP());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (downloadListner != null)
+                            downloadListner.OnErrorDownloadResult(RequestCode);
                     }
                 });
 

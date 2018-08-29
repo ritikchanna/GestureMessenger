@@ -11,5 +11,6 @@ public class Constants {
     public static int REQUEST_VERIFY_PHONE = 95;
     public static int ADD_FRIEND = 94;
     public static int GET_USER = 93;
+    public static int FRIEND_REQUEST_RESPONSE = 92;
 
 }

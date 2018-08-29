@@ -237,6 +237,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update(USER_INFO_TABLE, cv, USER_INFO_COLUMN_PHONE + " =? ", new String[]{phone});
     }
 
+    public void updateUser(UserPOJO user) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(USER_INFO_COLUMN_NAME, user.getN());
+        cv.put(USER_INFO_COLUMN_PHOTO_URL, user.getU());
+        cv.put(USER_INFO_COLUMN_PHONE, user.getP());
+        cv.put(USER_INFO_COLUMN_EMAIL, user.getE());
+        cv.put(USER_INFO_COLUMN_STATUS, user.getS()); //These Fields should be your String values of actual column names
+        db.update(USER_INFO_TABLE, cv, USER_INFO_COLUMN_PHONE + " =? ", new String[]{user.getP()});
+    }
+
 
 }
 
