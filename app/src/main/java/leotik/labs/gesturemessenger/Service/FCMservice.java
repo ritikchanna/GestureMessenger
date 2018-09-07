@@ -1,6 +1,8 @@
 package leotik.labs.gesturemessenger.Service;
 
+import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -59,7 +61,14 @@ public class FCMservice extends FirebaseMessagingService implements DownloadList
                 case "message":
                     Log.d("Ritik", "onMessageReceived: message");
                     String id = data.get("id");
-                    RealtimeDB.getInstance(getApplicationContext()).displayGesture(id);
+                    KeyguardManager myKM = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+                    if (myKM.inKeyguardRestrictedInputMode()) {
+                        RealtimeDB.getInstance(getApplicationContext()).insertGesture(id);
+                        //todo show notification here
+                    } else {
+                        RealtimeDB.getInstance(getApplicationContext()).displayGesture(id);
+                    }
+
                     break;
                 case "friend":
                     Log.d("Ritik", "onMessageReceived: friend");

@@ -54,7 +54,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ChatPOJO message = mMessages.get(position);
-        if (message.getSender().equals(mUser)) {
+        if (message.getSide().equals(ChatsDatabaseHelper.SIDE_DOWN)) {
             holder.rightMsg.setVisibility(View.GONE);
             holder.leftMsg.setVisibility(View.VISIBLE);
             holder.leftText.setText(getTime(message.getTime()));
@@ -93,9 +93,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         public void onClick(View view) {
             ChatPOJO message = mMessages.get(getAdapterPosition());
             launchoverlay.putExtra("gesture", message.getMessage());
-            UserPOJO user = databaseHelper.getUser(message.getSender());
+            UserPOJO user = databaseHelper.getUser(message.getUser());
             if (user == null) {
-                launchoverlay.putExtra("sender_name", message.getSender());
+                launchoverlay.putExtra("sender_name", message.getUser());
                 launchoverlay.putExtra("sender_picture", "");
             } else {
                 launchoverlay.putExtra("sender_name", user.getN());

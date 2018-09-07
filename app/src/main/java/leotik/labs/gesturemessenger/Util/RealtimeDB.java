@@ -343,16 +343,17 @@ public class RealtimeDB {
     }
 
 
-    public void sendMessage(String Receiver, String Gesture, final DownloadListner downloadListner) {
+    public void sendMessage(final String Receiver, final String Gesture, final DownloadListner downloadListner) {
         //todo break message if exceeds firebase limit
         //todo add oncomplete listener to show loading to sender
         Log.d("Ritik", "sendMessage: " + Receiver);
-        String Sender = mUser.getPhoneNo();
+        final String Sender = mUser.getPhoneNo();
+        final String Time = (System.currentTimeMillis()) + "";
         Map<String, String> msg = new HashMap<>();
         msg.put("s", Sender);
         msg.put("r", Receiver);
         msg.put("m", Gesture);
-        msg.put("t", (System.currentTimeMillis()) + "");
+        msg.put("t", Time);
         databaseReference.child("m").child(databaseReference.push().getKey()).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -363,13 +364,14 @@ public class RealtimeDB {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("Ritik", "onsuccess: ");
+                        chatsDatabaseHelper.insertChat(Receiver, ChatsDatabaseHelper.SIDE_UP, Gesture, Time, ChatsDatabaseHelper.STATUS_SENT);
                         downloadListner.OnDownloadResult(Constants.SEND_MESSAGE, "");
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("Ritik", "onfailiure: ");
+                Log.d("Ritik", "onfailure: ");
                 downloadListner.OnErrorDownloadResult(Constants.SEND_MESSAGE);
             }
         });
@@ -386,6 +388,7 @@ public class RealtimeDB {
 
                 String gesture = "gesture_value";
                 String sender = "sender value";
+                String receiver = "receiver value";
                 String time = "time_value";
 
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -393,6 +396,8 @@ public class RealtimeDB {
                         gesture = userSnapshot.getValue().toString();
                     else if (userSnapshot.getKey().equals("s"))
                         sender = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("r"))
+                        receiver = userSnapshot.getValue().toString();
                     else if (userSnapshot.getKey().equals("t"))
                         time = userSnapshot.getValue().toString();
 
@@ -416,11 +421,44 @@ public class RealtimeDB {
                 } else {
                     context.startService(intent);
                 }
-                chatsDatabaseHelper.insertChat(sender, gesture, time, "s");
+                chatsDatabaseHelper.insertChat(sender, ChatsDatabaseHelper.SIDE_DOWN, gesture, time, ChatsDatabaseHelper.STATUS_RECIEVED);
                 //todo update seen on server and database
 
 
                 //((AppCompatActivity) context).finish();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void insertGesture(String MessageID) {
+        databaseReference.child("m").child(MessageID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String gesture = "gesture_value";
+                String sender = "sender value";
+                String receiver = "receiver value";
+                String time = "time_value";
+
+
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    if (userSnapshot.getKey().equals("m"))
+                        gesture = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("s"))
+                        sender = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("r"))
+                        receiver = userSnapshot.getValue().toString();
+                    else if (userSnapshot.getKey().equals("t"))
+                        time = userSnapshot.getValue().toString();
+
+                }
+                chatsDatabaseHelper.insertChat(sender, ChatsDatabaseHelper.SIDE_DOWN, gesture, time, ChatsDatabaseHelper.STATUS_RECIEVED);
             }
 
             @Override

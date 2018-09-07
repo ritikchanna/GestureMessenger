@@ -1,17 +1,18 @@
 package leotik.labs.gesturemessenger.POJO;
 
 public class ChatPOJO {
-    private String Sender;
+    private String User;
     private String Time;
     private String Message;
     private String Status;
+    private String Side;
 
-    public String getSender() {
-        return Sender;
+    public String getUser() {
+        return User;
     }
 
     public void setSender(String sender) {
-        Sender = sender;
+        User = sender;
     }
 
     public String getTime() {
@@ -36,5 +37,13 @@ public class ChatPOJO {
 
     public void setStatus(String status) {
         Status = status;
+    }
+
+    public String getSide() {
+        return Side;
+    }
+
+    public void setSide(String side) {
+        Side = side;
     }
 }
