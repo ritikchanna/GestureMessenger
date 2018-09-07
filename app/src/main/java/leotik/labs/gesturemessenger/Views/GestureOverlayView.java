@@ -169,6 +169,11 @@ public class GestureOverlayView extends View implements Runnable {
         animator.start();
     }
 
+    public void clearIt() {
+        animator.stop();
+
+    }
+
 //    // Method to stop animation loop
 //    public void stopLooper() {
 //        please_top = true;

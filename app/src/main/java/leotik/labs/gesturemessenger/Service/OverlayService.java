@@ -34,7 +34,7 @@ public class OverlayService extends Service {
     private WindowManager mWindowManager;
     private GestureOverlayView mChatHeadView;
     private View HeaderView;
-
+    private WindowManager.LayoutParams params;
 
     public OverlayService() {
     }
@@ -60,7 +60,7 @@ public class OverlayService extends Service {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
         }
         //Add the view to the window.
-        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        params = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 //WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
@@ -112,6 +112,10 @@ public class OverlayService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //todo service closes on ram clear, showing notification can be possible fix, doesnt work on oreo
 
+        mWindowManager.removeView(mChatHeadView);
+        mChatHeadView = new GestureOverlayView(getApplicationContext());
+        mWindowManager.addView(mChatHeadView, params);
+
         startForeground(36, getNotification());
         String name = intent.getStringExtra("sender_name");
         ((TextView) HeaderView.findViewById(R.id.overlay_name)).setText(name);
@@ -123,6 +127,7 @@ public class OverlayService extends Service {
 
         mChatHeadView.startIt(100, intent.getStringExtra("gesture"));
         return Service.START_STICKY;
+
     }
 
     public Notification getNotification() {
