@@ -15,25 +15,24 @@ import leotik.labs.gesturemessenger.POJO.UserPOJO;
 
 public class ChatsDatabaseHelper extends SQLiteOpenHelper {
 
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
-
-    // Database Name
-    private static final String DATABASE_NAME = "chats_db";
-    private static final String CHAT_TABLE = "chats";
-    private static final String COLUMN_ID = "id";
     public static final String STATUS_SENT = "s";
     public static final String STATUS_DELIVERED = "d";
-    private static final String COLUMN_TIME = "time";
-    private static final String COLUMN_MESSAGE = "message";
-    private static final String COLUMN_STATUS = "status";
-    private DatabaseHelper databaseHelper;
     public static final String STATUS_READ = "r";
     public static final String STATUS_RECIEVED = "rr";
     public static final String SIDE_DOWN = "down";
     public static final String SIDE_UP = "up";
+    // Database Version
+    private static final int DATABASE_VERSION = 1;
+    // Database Name
+    private static final String DATABASE_NAME = "chats_db";
+    private static final String CHAT_TABLE = "chats";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_TIME = "time";
+    private static final String COLUMN_MESSAGE = "message";
+    private static final String COLUMN_STATUS = "status";
     private static final String COLUMN_USER = "user";
     private static final String COLUMN_SIDE = "side";
+    private DatabaseHelper databaseHelper;
 
 
     public ChatsDatabaseHelper(Context context) {
