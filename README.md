@@ -1,0 +1,2 @@
+# GestureMessenger
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f63bafda4104e0cac5a6080bd1de3c6)](https://app.codacy.com/app/ritikchanna/GestureMessenger?utm_source=github.com&utm_medium=referral&utm_content=ritikchanna/GestureMessenger&utm_campaign=Badge_Grade_Dashboard)
