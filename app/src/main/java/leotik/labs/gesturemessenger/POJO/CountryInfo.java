@@ -3,7 +3,8 @@ package leotik.labs.gesturemessenger.POJO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.RestrictTo;
+
+import androidx.annotation.RestrictTo;
 
 import java.text.Collator;
 import java.util.Locale;

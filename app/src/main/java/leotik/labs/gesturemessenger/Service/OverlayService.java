@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,13 +20,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import leotik.labs.gesturemessenger.R;
 import leotik.labs.gesturemessenger.Util.Logging;
 import leotik.labs.gesturemessenger.Views.GestureOverlayView;
 
-import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
+import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
 
 public class OverlayService extends Service {
     private WindowManager mWindowManager;

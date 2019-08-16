@@ -12,7 +12,7 @@
         tools:visibility="visible" />
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/send_code_container"
         style="@style/FirebaseUI.WrapperStyle"
         android:layout_width="match_parent"
@@ -69,9 +69,9 @@
             app:layout_constraintTop_toBottomOf="@+id/send_code" />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/verify_code_container"
         style="@style/FirebaseUI.WrapperStyle"
         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
             tools:ignore="SelectableText" />
 
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/confirmation_code_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,9 +119,9 @@
                 android:typeface="monospace"
                 app:spacingProportion="1.1" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </RelativeLayout>

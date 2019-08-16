@@ -3,9 +3,10 @@ package leotik.labs.gesturemessenger.Util;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -289,7 +290,7 @@ public class RealtimeDB {
 
 
         for (final Map.Entry<String, Object> entry : userstoadd.entrySet()) {
-            firebaseFirestore.collection("u").document(entry.getKey().toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            firebaseFirestore.collection("u").document(entry.getKey()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {

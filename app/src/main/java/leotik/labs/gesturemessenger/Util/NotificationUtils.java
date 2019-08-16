@@ -9,12 +9,13 @@ import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 import leotik.labs.gesturemessenger.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static android.support.v4.app.NotificationCompat.VISIBILITY_PRIVATE;
+import static androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE;
 
 public class NotificationUtils {
 
