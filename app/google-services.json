@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "109198356718-e1fjt1hgt6netlhmd1uo7rghinicv7uq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "leotik.labs.gesturemessenger",
+            "certificate_hash": "541d60dc1f451c2bb8aaed4b0c87ebec66e75374"
+          }
+        },
+        {
+          "client_id": "109198356718-6poo2g8lbhec3phek85vbtlmq0pgaafl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "leotik.labs.gesturemessenger",
+            "certificate_hash": "458406d8beb5d0e4d84b829f4b521e07f80a3185"
+          }
+        },
+        {
           "client_id": "109198356718-ma4iqvgrmeenbav6bn97n4dqa9pepof8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -33,20 +49,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "109198356718-3n04bcl5q0n1hdhv9ijgrc41mqi87vts.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
